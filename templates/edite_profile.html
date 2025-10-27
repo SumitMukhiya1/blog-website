@@ -1,0 +1,873 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-light: #dbeafe;
+        --primary-dark: #1d4ed8;
+        --secondary: #64748b;
+        --secondary-light: #f8fafc;
+        --accent: #7c3aed;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        --border: #e5e7eb;
+        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .edit-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .page-header {
+        margin-bottom: 3rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: var(--gray-900);
+    }
+
+    .page-subtitle {
+        color: var(--gray-500);
+        font-size: 1.1rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .edit-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 0;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--gray-50);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--gray-800);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .required::after {
+        content: '*';
+        color: #ef4444;
+        margin-left: 4px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        background: var(--white);
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.5;
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: var(--gray-500);
+        margin-top: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .char-count {
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--gray-400);
+        margin-top: 0.25rem;
+    }
+
+    /* Profile Picture */
+    .avatar-section {
+        text-align: center;
+        padding: 2.5rem;
+    }
+
+    .avatar-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--white);
+        box-shadow: var(--shadow-lg);
+        background: var(--gray-100);
+    }
+
+    .avatar-edit {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: var(--primary);
+        color: var(--white);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px solid var(--white);
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .avatar-edit:hover {
+        background: var(--primary-dark);
+        transform: scale(1.05);
+    }
+
+    .avatar-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Skills */
+    .skills-input-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .skills-input {
+        flex: 1;
+    }
+
+    .skills-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        min-height: 2.5rem;
+        padding: 0.5rem 0;
+    }
+
+    .skill-tag {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: 1px solid var(--primary-light);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .skill-tag:hover {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    .skill-remove {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+    }
+
+    .skill-remove:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+
+    /* Links */
+    .links-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .link-item {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+    }
+
+    .link-platform {
+        min-width: 140px;
+    }
+
+    .link-url {
+        flex: 1;
+    }
+
+    .link-delete {
+        background: var(--white);
+        color: var(--gray-500);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .link-delete:hover {
+        background: var(--gray-100);
+        border-color: var(--gray-300);
+        color: var(--gray-700);
+    }
+
+    .add-link {
+        background: var(--gray-50);
+        color: var(--gray-700);
+        border: 2px dashed var(--border);
+        border-radius: 8px;
+        padding: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+
+    .add-link:hover {
+        background: var(--gray-100);
+        border-color: var(--gray-400);
+        color: var(--gray-800);
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: var(--white);
+        box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+        background: var(--white);
+        color: var(--gray-700);
+        border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-300);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+        background: var(--primary-light);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .form-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .form-grid-full {
+            grid-column: 1 / -1;
+        }
+    }
+
+    /* Success Message */
+    .success-message {
+        background: #dcfce7;
+        color: #166534;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border: 1px solid #bbf7d0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .link-item {
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: stretch;
+        }
+
+        .link-platform {
+            min-width: auto;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .avatar-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar-actions .btn {
+            width: 200px;
+            justify-content: center;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+
+<div class="edit-container">
+    <div class="page-header">
+        <h1 class="page-title">Edit Profile</h1>
+        <p class="page-subtitle">Update your personal information and customize how others see you on the platform</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('editing_profile_page') }}" enctype="multipart/form-data">
+        <!-- Profile Picture -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-camera"></i>
+                    Profile Picture
+                </h2>
+            </div>
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <img src="{{ url_for('static', filename='profile_pics/' + user_info.profile_image) if user_info.profile_image else 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' }}"
+                     alt="Profile"
+                     class="avatar"
+                     id="avatarPreview"
+                     onerror="this.src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'">
+                    <div class="avatar-edit" onclick="document.getElementById('avatarInput').click()">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                    <input type="file"
+                           id="avatarInput"
+                           name="profile_picture"
+                           class="file-input"
+                           accept="image/*"
+                           onchange="updateAvatar(this)">
+                </div>
+                <div class="avatar-actions">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('avatarInput').click()">
+                        <i class="fas fa-upload"></i>
+                        Upload New Photo
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetAvatar()">
+                        <i class="fas fa-trash"></i>
+                        Remove Photo
+                    </button>
+                </div>
+                <div class="help-text">Recommended: Square image, at least 400x400 pixels, JPG or PNG format</div>
+            </div>
+        </div>
+
+        <!-- Basic Information -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-user"></i>
+                    Basic Information
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label required">Full Name</label>
+                        <input type="text"
+                               class="form-control"
+                               name="fullname"
+                               value="{{ user_info.fullname or '' }}"
+                               placeholder="Enter your full name"
+                               required
+                               maxlength="50">
+                        <div class="char-count" id="nameCount">0/50</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">User Name</label>
+                        <input type="text"
+                               class="form-control"
+                               name="user_name"
+                               value="{{ user_info.user_name or '' }}"
+                               placeholder="username"
+                               maxlength="30">
+                        <div class="help-text">This will be your unique identifier</div>
+                    </div>
+
+                    <div class="form-group form-grid-full">
+                        <label class="form-label">Professional Title</label>
+                        <input type="text"
+                               class="form-control"
+                               name="profession"
+                               value="{{ user_info.profession or '' }}"
+                               placeholder="e.g. Senior Software Developer"
+                               maxlength="50">
+                        <div class="char-count" id="professionCount">0/50</div>
+                    </div>
+
+                    <div class="form-group form-grid-full">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-control"
+                                  name="bio"
+                                  placeholder="Tell people about yourself, your experience, and what you're passionate about..."
+                                  maxlength="160">{{ user_info.bio or '' }}</textarea>
+                        <div class="char-count" id="bioCount">0/160</div>
+                        <div class="help-text">A brief introduction that appears on your profile</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-envelope"></i>
+                    Contact Information
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label required">Email Address</label>
+                        <input type="email"
+                               class="form-control"
+                               name="email"
+                               value="{{ user_info.email or '' }}"
+                               placeholder="your.email@example.com"
+                               required>
+                        <div class="help-text">Your email will not be shared publicly</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel"
+                               class="form-control"
+                               name="phone"
+                               value="{{ user_info.phone or '' }}"
+                               placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <div class="form-group form-grid-full">
+                        <label class="form-label">Location</label>
+                        <input type="text"
+                               class="form-control"
+                               name="location"
+                               value="{{ user_info.location or '' }}"
+                               placeholder="City, Country">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills & Expertise -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-star"></i>
+                    Skills & Expertise
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="skills-input-group">
+                        <input type="text"
+                               class="form-control skills-input"
+                               id="skillInput"
+                               placeholder="Add a skill (e.g. Python, Design, Marketing)"
+                               maxlength="25">
+                        <button type="button" class="btn btn-primary" onclick="addSkill()">
+                            <i class="fas fa-plus"></i>
+                            Add
+                        </button>
+                    </div>
+
+                    <div class="skills-tags" id="skillsContainer">
+                        {% for skill in user_info.skills or [] %}
+                            <div class="skill-tag">
+                                {{ skill }}
+                                <button type="button" class="skill-remove" onclick="removeSkill(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <input type="hidden" name="skills" value="{{ skill }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="help-text">Add your key skills and areas of expertise. These help others understand your strengths.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-link"></i>
+                    Social Links
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="links-list" id="linksContainer">
+                        {% for link in user_info.links or [] %}
+                            <div class="link-item">
+                                <select class="form-control link-platform" name="link_platforms">
+                                    <option value="website" {{ 'selected' if link.platform == 'website' }}>Website</option>
+                                    <option value="linkedin" {{ 'selected' if link.platform == 'linkedin' }}>LinkedIn</option>
+                                    <option value="github" {{ 'selected' if link.platform == 'github' }}>GitHub</option>
+                                    <option value="twitter" {{ 'selected' if link.platform == 'twitter' }}>Twitter</option>
+                                    <option value="instagram" {{ 'selected' if link.platform == 'instagram' }}>Instagram</option>
+                                </select>
+                                <input type="url"
+                                       class="form-control link-url"
+                                       name="link_urls"
+                                       value="{{ link.url }}"
+                                       placeholder="https://example.com">
+                                <button type="button" class="link-delete" onclick="removeLink(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="button" class="add-link" onclick="addLink()">
+                        <i class="fas fa-plus"></i>
+                        Add Another Link
+                    </button>
+                    <div class="help-text">Add links to your website, social media profiles, or portfolio</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-file-alt"></i>
+                    About Section
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <textarea class="form-control"
+                              name="about"
+                              placeholder="Share more about your background, experience, achievements, and interests. This is your opportunity to tell your story..."
+                              maxlength="500">{{ user_info.about or '' }}</textarea>
+                    <div class="char-count" id="aboutCount">0/500</div>
+                    <div class="help-text">This detailed about section appears on your public profile</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='/profile'">
+                <i class="fas fa-times"></i>
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Character counters
+    function setupCounters() {
+        const fields = [
+            { input: document.querySelector('input[name="fullname"]'), counter: document.getElementById('nameCount') },
+            { input: document.querySelector('input[name="profession"]'), counter: document.getElementById('professionCount') },
+            { input: document.querySelector('textarea[name="bio"]'), counter: document.getElementById('bioCount') },
+            { input: document.querySelector('textarea[name="about"]'), counter: document.getElementById('aboutCount') }
+        ];
+
+        fields.forEach(({ input, counter }) => {
+            if (input && counter) {
+                updateCounter(counter, input.value.length, input.maxLength);
+                input.addEventListener('input', () => {
+                    updateCounter(counter, input.value.length, input.maxLength);
+                });
+            }
+        });
+    }
+
+    function updateCounter(counter, current, max) {
+        counter.textContent = `${current}/${max}`;
+        if (current > max * 0.9) {
+            counter.style.color = '#ef4444';
+        } else if (current > max * 0.75) {
+            counter.style.color = '#f59e0b';
+        } else {
+            counter.style.color = 'var(--gray-400)';
+        }
+    }
+
+    // Avatar functions
+    function updateAvatar(input) {
+        const preview = document.getElementById('avatarPreview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function resetAvatar() {
+        const preview = document.getElementById('avatarPreview');
+        const input = document.getElementById('avatarInput');
+        preview.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+        input.value = '';
+    }
+
+    // Skills functions
+    function addSkill() {
+        const input = document.getElementById('skillInput');
+        const skill = input.value.trim();
+
+        if (skill) {
+            const container = document.getElementById('skillsContainer');
+            const skillTag = document.createElement('div');
+            skillTag.className = 'skill-tag';
+            skillTag.innerHTML = `
+                ${skill}
+                <button type="button" class="skill-remove" onclick="removeSkill(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <input type="hidden" name="skills" value="${skill}">
+            `;
+            container.appendChild(skillTag);
+            input.value = '';
+
+            // Add animation
+            skillTag.style.opacity = '0';
+            skillTag.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                skillTag.style.transition = 'all 0.3s ease';
+                skillTag.style.opacity = '1';
+                skillTag.style.transform = 'scale(1)';
+            }, 10);
+        }
+    }
+
+    function removeSkill(button) {
+        const skillTag = button.parentElement;
+        skillTag.style.transition = 'all 0.3s ease';
+        skillTag.style.opacity = '0';
+        skillTag.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+            skillTag.remove();
+        }, 300);
+    }
+
+    // Links functions
+    function addLink() {
+        const container = document.getElementById('linksContainer');
+        const linkItem = document.createElement('div');
+        linkItem.className = 'link-item';
+        linkItem.innerHTML = `
+            <select class="form-control link-platform" name="link_platforms">
+                <option value="website">Website</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="github">GitHub</option>
+                <option value="twitter">Twitter</option>
+                <option value="instagram">Instagram</option>
+            </select>
+            <input type="url" class="form-control link-url" name="link_urls" placeholder="https://example.com">
+            <button type="button" class="link-delete" onclick="removeLink(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        container.appendChild(linkItem);
+
+        // Add animation
+        linkItem.style.opacity = '0';
+        linkItem.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            linkItem.style.transition = 'all 0.3s ease';
+            linkItem.style.opacity = '1';
+            linkItem.style.transform = 'translateY(0)';
+        }, 10);
+    }
+
+    function removeLink(button) {
+        const linkItem = button.parentElement;
+        linkItem.style.transition = 'all 0.3s ease';
+        linkItem.style.opacity = '0';
+        linkItem.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            linkItem.remove();
+        }, 300);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        setupCounters();
+
+        // Enter key for skills
+        document.getElementById('skillInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSkill();
+            }
+        });
+
+        // Add subtle animations to cards
+        const cards = document.querySelectorAll('.edit-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

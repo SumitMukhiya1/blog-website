@@ -1,38 +1,142 @@
-from flask import Flask
-from flask_login import LoginManager
+from django.contrib.auth.decorators import login_required
+from flask import Flask, render_template, request, redirect, url_for,flash
+from flask_login import LoginManager, current_user
+from werkzeug.utils import secure_filename
+import os
+import time
 
-#Importing Routes
-from all_routes.models import User, db
-from all_routes.main_routes import init_main_routes
-from all_routes.authentication_routes import init_auth_routes
-from all_routes.post_routes import init_post_routes
-from all_routes.comment_routes import init_comment_routes
-from all_routes.other_routes import init_other_routes
-from all_routes.config import init_config
+from routes.models_routes import User, db
+from routes.authentication import authentication_route
 
-#SetUp App
 app = Flask(__name__)
-init_config(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login_page"  # redirect if not logged in
+app.secret_key = "jhguyhiugnbk"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['UPLOAD_FOLDER'] = 'static/profile_pics'
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2 MB max file size
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
-#Give SqlAlchemy our app now it works with requests
-db.init_app(app)
+login_manager = LoginManager(app)
+login_manager.login_view = "login_page"
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-#all routes
-init_main_routes(app)
-init_auth_routes(app)
-init_post_routes(app)
-init_comment_routes(app)
-init_other_routes(app)
+#Database of user
+db.init_app(app)
+user_db = User()
+
+#Authentication route
+authentication_route(app)
+
+
+@app.route('/')
+def home_page():
+    if current_user.is_authenticated:
+        user_info = {
+            "fullname": current_user.fullname,
+            "email": current_user.email,
+            "profile_image": current_user.profile_image,
+            "user_name": current_user.user_name,
+        }
+    else:
+        return redirect(url_for('landing_page'))
+
+    return render_template('home.html', user_info=user_info)
+
+@app.route('/profile')
+def user_profile():
+    user_info = {
+        "fullname": current_user.fullname,
+        "email": current_user.email,
+        "profile_image": current_user.profile_image,
+        "user_name": current_user.user_name,
+        "about": current_user.about,
+        "profession": current_user.profession,
+        "bio": current_user.bio,
+
+    }
+    return render_template('profile.html', user_info=user_info)
+
+@app.route('/landing_page')
+def landing_page():
+    return render_template('landing_page.html')
+
+
+@app.route('/editing_profile', methods=['GET', 'POST'])
+def editing_profile_page():
+    if request.method == 'POST':
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename != '':
+                if allowed_file(file.filename):
+                    try:
+                        # Generate unique filename to avoid conflicts
+                        file_text = os.path.splitext(file.filename)[1]
+                        filename = secure_filename(f"{current_user.id}_{int(time.time())}{file_text}")
+                        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        # Save file
+                        file.save(file_path)
+                        # Update database
+                        current_user.profile_image = filename
+
+                        flash('Profile picture updated successfully!', 'success')
+                        updated = True
+                    except Exception as e:
+                        print(f"Error saving file: {str(e)}")
+                        flash('Error updating profile picture', 'error')
+                else:
+                    flash('Invalid file type', 'error')
+
+        #getting other info from user
+        username = request.form.get('user_name')
+        if username and current_user.user_name != username:
+            current_user.user_name = username
+            flash('Username updated successfully!', 'success')
+            updated = True
+
+        about = request.form.get('about')
+        if about and current_user.about != about:
+            current_user.about = about
+            flash('Your about updated successfully!', 'success')
+            updated = True
+
+        profession = request.form.get('profession')
+        if profession and current_user.profession != profession:
+            current_user.profession = profession
+            flash('Your profession updated successfully!', 'success')
+            updated = True
+
+        bio = request.form.get('bio')
+        if bio and current_user.bio != bio:
+            current_user.bio = bio
+            flash('Your bio updated successfully!', 'success')
+            updated = True
+
+        if updated:
+            db.session.commit()
+
+        return redirect(url_for('editing_profile_page'))
+
+    user_info = {
+        "fullname": current_user.fullname,
+        "email": current_user.email,
+        "profile_image": current_user.profile_image,
+        "user_name": current_user.user_name,
+        "about": current_user.about,
+        "profession": current_user.profession,
+        "bio": current_user.bio,
+    }
+    return render_template('edite_profile.html', user_info=user_info)
+
+@app.route('/post_blog')
+def post_blog():
+    return render_template('make_post.html')
 
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

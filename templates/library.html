@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - Readium</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFFFFF;
+            --secondary: #000000;
+            --light: #F8F9FA;
+            --gray-light: #E9ECEF;
+            --gray-medium: #6C757D;
+            --gray-dark: #495057;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary);
+            color: var(--secondary);
+            line-height: 1.6;
+        }
+
+        /* Simple Navbar */
+        .navbar-clean {
+            background: var(--primary);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand-clean {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--secondary) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand-clean i {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Simple Container */
+        .library-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Simple Header */
+        .library-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .library-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .library-subtitle {
+            color: var(--gray-medium);
+            font-size: 1.1rem;
+        }
+
+        /* Simple Tabs */
+        .library-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--gray-light);
+            background: var(--primary);
+            color: var(--gray-dark);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .tab-btn.active {
+            background: var(--secondary);
+            color: var(--primary);
+            border-color: var(--secondary);
+        }
+
+        /* Simple Search */
+        .search-box {
+            max-width: 400px;
+            margin: 0 auto 2rem auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-medium);
+        }
+
+        /* Simple Articles Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Simple Article Card */
+        .article-card {
+            background: var(--primary);
+            border: 1px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--light);
+            color: var(--gray-dark);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .article-excerpt {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .author-info p {
+            font-size: 0.75rem;
+            color: var(--gray-medium);
+            margin: 0;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--gray-light);
+            color: var(--gray-medium);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--light);
+            color: var(--secondary);
+        }
+
+        .action-btn.active {
+            background: var(--secondary);
+            color: var(--primary);
+            border-color: var(--secondary);
+        }
+
+        /* Simple Collections */
+        .collections-section {
+            margin-top: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .collection-card {
+            background: var(--primary);
+            border: 1px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .collection-card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .collection-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            background: var(--light);
+            color: var(--secondary);
+            font-size: 1.25rem;
+        }
+
+        .collection-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .collection-count {
+            color: var(--gray-medium);
+            font-size: 0.85rem;
+        }
+
+        /* Simple Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-medium);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gray-dark);
+        }
+
+        /* Simple Button */
+        .btn-simple {
+            padding: 0.8rem 1.5rem;
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-simple:hover {
+            background: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .library-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .collections-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .library-tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-btn {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Simple Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-clean">
+        <div class="container">
+            <a class="navbar-brand-clean" href="#">
+                <i class="fas fa-book-reader"></i>
+                Readium
+            </a>
+        </div>
+    </nav>
+
+    <!-- Simple Library Container -->
+    <div class="library-container">
+        <!-- Simple Header -->
+        <div class="library-header">
+            <h1 class="library-title">My Library</h1>
+            <p class="library-subtitle">Your saved articles and reading lists</p>
+        </div>
+
+        <!-- Simple Tabs -->
+        <div class="library-tabs">
+            <button class="tab-btn active">
+                <i class="fas fa-bookmark"></i>
+                Saved
+            </button>
+            <button class="tab-btn">
+                <i class="fas fa-clock"></i>
+                Reading List
+            </button>
+            <button class="tab-btn">
+                <i class="fas fa-folder"></i>
+                Collections
+            </button>
+            <button class="tab-btn">
+                <i class="fas fa-history"></i>
+                History
+            </button>
+        </div>
+
+        <!-- Simple Search -->
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search your library...">
+        </div>
+
+        <!-- Simple Articles Grid -->
+        <div class="articles-grid">
+            <!-- Article 1 -->
+            <div class="article-card">
+                <span class="article-category">Technology</span>
+                <h3 class="article-title">The Future of AI in Content Creation</h3>
+                <p class="article-excerpt">
+                    How artificial intelligence is changing the way we create and consume digital content.
+                </p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="Author" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Sarah Chen</h4>
+                            <p>8 min read</p>
+                        </div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn active">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Article 2 -->
+            <div class="article-card">
+                <span class="article-category">Productivity</span>
+                <h3 class="article-title">Building a Second Brain</h3>
+                <p class="article-excerpt">
+                    Organize your digital life and never forget important ideas again.
+                </p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Author" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Marcus Johnson</h4>
+                            <p>6 min read</p>
+                        </div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn active">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Article 3 -->
+            <div class="article-card">
+                <span class="article-category">Writing</span>
+                <h3 class="article-title">The Art of Storytelling</h3>
+                <p class="article-excerpt">
+                    Learn how to craft narratives that captivate your readers from start to finish.
+                </p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Author" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Emily Rodriguez</h4>
+                            <p>10 min read</p>
+                        </div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn active">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Article 4 -->
+            <div class="article-card">
+                <span class="article-category">Design</span>
+                <h3 class="article-title">Minimalism in Web Design</h3>
+                <p class="article-excerpt">
+                    Why less is more when it comes to creating beautiful and functional websites.
+                </p>
+                <div class="article-meta">
+                    <div class="article-author">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face" alt="Author" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Alex Kim</h4>
+                            <p>7 min read</p>
+                        </div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn active">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simple Collections -->
+        <div class="collections-section">
+            <h2 class="section-title">Your Collections</h2>
+            <div class="collections-grid">
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="collection-name">Favorites</div>
+                    <div class="collection-count">12 articles</div>
+                </div>
+
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="collection-name">Technology</div>
+                    <div class="collection-count">8 articles</div>
+                </div>
+
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="collection-name">Ideas</div>
+                    <div class="collection-count">5 articles</div>
+                </div>
+
+                <div class="collection-card">
+                    <div class="collection-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="collection-name">New Collection</div>
+                    <div class="collection-count">Create</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn-simple">
+                <i class="fas fa-redo"></i>
+                Load More Articles
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple tab switching
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show loading state
+                    const articlesGrid = document.querySelector('.articles-grid');
+                    articlesGrid.style.opacity = '0.7';
+
+                    setTimeout(() => {
+                        articlesGrid.style.opacity = '1';
+                    }, 300);
+                });
+            });
+
+            // Simple bookmark toggle
+            const bookmarkButtons = document.querySelectorAll('.action-btn');
+            bookmarkButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Simple article click
+            const articleCards = document.querySelectorAll('.article-card');
+            articleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.article-title').textContent;
+                    console.log(`Reading: ${title}`);
+                    // In real app, navigate to article page
+                });
+            });
+
+            // Simple search
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const articles = document.querySelectorAll('.article-card');
+
+                articles.forEach(article => {
+                    const title = article.querySelector('.article-title').textContent.toLowerCase();
+                    const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
+                    const category = article.querySelector('.article-category').textContent.toLowerCase();
+
+                    if (title.includes(searchTerm) || excerpt.includes(searchTerm) || category.includes(searchTerm)) {
+                        article.style.display = 'block';
+                    } else {
+                        article.style.display = 'none';
+                    }
+                });
+            });
+
+            // Simple collection creation
+            const newCollectionCard = document.querySelector('.collection-card:last-child');
+            newCollectionCard.addEventListener('click', function() {
+                const collectionName = prompt('What would you like to name your collection?');
+                if (collectionName && collectionName.trim() !== '') {
+                    // Create new collection
+                    const collectionsGrid = document.querySelector('.collections-grid');
+                    const newCollection = document.createElement('div');
+                    newCollection.className = 'collection-card';
+                    newCollection.innerHTML = `
+                        <div class="collection-icon">
+                            <i class="fas fa-folder"></i>
+                        </div>
+                        <div class="collection-name">${collectionName}</div>
+                        <div class="collection-count">0 articles</div>
+                    `;
+
+                    // Insert before the "New Collection" card
+                    collectionsGrid.insertBefore(newCollection, this);
+
+                    alert(`Collection "${collectionName}" created!`);
+                }
+            });
+
+            // Load more articles
+            const loadMoreBtn = document.querySelector('.btn-simple');
+            loadMoreBtn.addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                this.disabled = true;
+
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-redo"></i> Load More Articles';
+                    this.disabled = false;
+                    alert('More articles loaded!');
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
