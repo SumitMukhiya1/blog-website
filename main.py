@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from flask import Flask, render_template, request, redirect, url_for,flash
 from flask_login import LoginManager, current_user
 from werkzeug.utils import secure_filename
