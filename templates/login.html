@@ -1,91 +1,182 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Readium</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Pure Black & White Color Scheme - Matching Homepage */
         :root {
-            --primary: #FFFFFF;
-            --secondary: #000000;
-            --light: #F8F9FA;
-            --gray-light: #E9ECEF;
-            --gray-medium: #6C757D;
-            --gray-dark: #495057;
+            --white: #ffffff;
+            --black: #000000;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --dark-gray: #495057;
+            --border-color: #e9ecef;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--primary);
+            background: var(--white);
+            color: var(--black);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            line-height: 1.6;
         }
 
-        .login-container {
-            width: 100%;
-            max-width: 400px;
+        /* Mobile Navigation - Same as Homepage */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0.5rem 0;
+            z-index: 1000;
         }
 
-        .login-card {
-            background: var(--primary);
-            border-radius: 12px;
-            padding: 40px 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--medium-gray);
+            font-size: 0.7rem;
+            transition: color 0.3s ease;
+            padding: 0.5rem;
+            flex: 1;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--black);
+        }
+
+        .mobile-nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Desktop Navigation - Same as Homepage */
+        .desktop-nav {
+            display: none;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--black);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        /* Login Container */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Logo Section - Matching Homepage Style */
+        .logo-section {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 2.5rem;
         }
 
         .logo-icon {
             font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 10px;
+            color: var(--black);
+            margin-bottom: 1rem;
         }
 
         .logo-text {
-            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--secondary);
+            color: var(--black);
             letter-spacing: -0.5px;
         }
 
+        /* Welcome Text */
         .welcome-text {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 2.5rem;
         }
 
         .welcome-text h1 {
             font-size: 1.5rem;
             font-weight: 600;
-            color: var(--secondary);
-            margin-bottom: 8px;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .welcome-text p {
-            color: var(--gray-medium);
+            color: var(--medium-gray);
             font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
         }
 
+        /* Form Elements - Matching Homepage Style */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            display: block;
+            font-family: 'Inter', sans-serif;
         }
 
         .input-group {
@@ -94,85 +185,94 @@
 
         .form-control {
             width: 100%;
-            padding: 15px 45px 15px 15px;
-            border: 2px solid var(--gray-light);
+            padding: 1rem;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s ease;
-            background: var(--primary);
-            color: var(--secondary);
+            background: var(--white);
+            color: var(--black);
+            font-family: 'Inter', sans-serif;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: var(--secondary);
+            border-color: var(--black);
             box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
         }
 
         .input-icon {
             position: absolute;
-            right: 15px;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--gray-medium);
+            color: var(--medium-gray);
         }
 
+        /* Form Options */
         .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
         }
 
         .remember-me {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--gray-dark);
+            gap: 0.5rem;
+            color: var(--medium-gray);
+            font-family: 'Inter', sans-serif;
         }
 
         .remember-me input {
             width: 16px;
             height: 16px;
+            accent-color: var(--black);
         }
 
         .forgot-password {
-            color: var(--secondary);
+            color: var(--black);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
 
         .forgot-password:hover {
-            color: var(--gray-dark);
+            color: var(--medium-gray);
         }
 
+        /* Login Button - Matching Homepage Style */
         .login-btn {
             width: 100%;
-            padding: 15px;
-            background: var(--secondary);
-            color: var(--primary);
+            padding: 1rem;
+            background: var(--black);
+            color: var(--white);
             border: none;
             border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 25px;
+            margin-bottom: 1.5rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .login-btn:hover {
-            background: #333;
+            background: var(--dark-gray);
             transform: translateY(-1px);
         }
 
+        /* Divider */
         .divider {
             display: flex;
             align-items: center;
-            margin: 25px 0;
-            color: var(--gray-medium);
-            font-size: 0.9rem;
+            margin: 1.5rem 0;
+            color: var(--medium-gray);
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .divider::before,
@@ -180,26 +280,27 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: var(--gray-light);
+            background: var(--border-color);
         }
 
         .divider span {
-            padding: 0 15px;
+            padding: 0 1rem;
         }
 
+        /* Social Login - Matching Homepage Style */
         .social-login {
             display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
         .social-btn {
             flex: 1;
-            padding: 12px;
-            border: 2px solid var(--gray-light);
+            padding: 0.875rem;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            background: var(--primary);
-            color: var(--secondary);
+            background: var(--white);
+            color: var(--black);
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
@@ -207,43 +308,50 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 0.5rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .social-btn:hover {
-            border-color: var(--secondary);
-            background: var(--light);
+            border-color: var(--black);
+            background: var(--light-gray);
         }
 
+        /* Sign Up Section */
         .signup-section {
             text-align: center;
-            color: var(--gray-medium);
-            font-size: 0.95rem;
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .signup-link {
-            color: var(--secondary);
+            color: var(--black);
             font-weight: 600;
             text-decoration: none;
-            margin-left: 5px;
+            margin-left: 0.25rem;
             transition: color 0.3s ease;
         }
 
         .signup-link:hover {
-            color: var(--gray-dark);
+            color: var(--medium-gray);
         }
 
+        /* Error Handling - Matching Homepage */
         .error-message {
             color: #dc3545;
-            font-size: 0.85rem;
-            margin-top: 5px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
             display: none;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
         }
 
         .has-error .form-control {
             border-color: #dc3545;
         }
 
+        /* Loading State */
         .login-btn.loading {
             position: relative;
             color: transparent;
@@ -269,9 +377,25 @@
             to { transform: rotate(1turn); }
         }
 
-        @media (max-width: 480px) {
+        /* Responsive Design */
+        @media (max-width: 768px) {
             .login-card {
-                padding: 30px 20px;
+                padding: 2rem 1.5rem;
+                border-radius: 8px;
+                border: none;
+                box-shadow: none;
+            }
+
+            .logo-icon {
+                font-size: 2rem;
+            }
+
+            .logo-text {
+                font-size: 1.75rem;
+            }
+
+            .welcome-text h1 {
+                font-size: 1.3rem;
             }
 
             .social-login {
@@ -280,19 +404,63 @@
 
             .form-options {
                 flex-direction: column;
-                gap: 15px;
+                gap: 1rem;
                 align-items: flex-start;
+            }
+
+            .mobile-nav {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .desktop-nav {
+                display: block;
+            }
+
+            body {
+                padding-top: 80px;
+                padding-bottom: 0;
+            }
+
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .login-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .logo-icon {
+                font-size: 1.75rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a class="logo">
+                <i class="fas fa-book-open"></i>
+                Readium
+            </a>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
     <div class="login-container">
         <div class="login-card">
-            <!-- Logo -->
-            <div class="logo">
+            <!-- Logo Section -->
+            <div class="logo-section">
                 <div class="logo-icon">
-                    <i class="fas fa-book-reader"></i>
+                    <i class="fas fa-book-open"></i>
                 </div>
                 <div class="logo-text">Readium</div>
             </div>
@@ -307,6 +475,7 @@
             <form action="{{ url_for('login_page') }}" method="post" id="loginForm">
                 <!-- Email Field -->
                 <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
                     <div class="input-group">
                         <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
                         <i class="fas fa-envelope input-icon"></i>
@@ -316,6 +485,7 @@
 
                 <!-- Password Field -->
                 <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
                         <i class="fas fa-lock input-icon"></i>
@@ -357,7 +527,7 @@
                 <!-- Sign Up Link -->
                 <div class="signup-section">
                     Don't have an account?
-                    <a href="{{ url_for('register_page') }}" class="signup-link">Sign up</a>
+                    <a href="{{ url_for('signup_page') }}" class="signup-link">Sign up</a>
                 </div>
             </form>
         </div>
@@ -425,31 +595,19 @@
                 }
             });
 
+            // Form submission
+            loginForm.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    return;
+                }
 
                 // Show loading state
                 loginBtn.classList.add('loading');
                 loginBtn.disabled = true;
 
-                // Simulate API call
-                setTimeout(() => {
-                    const loginData = {
-                        email: emailInput.value,
-                        password: passwordInput.value,
-                        rememberMe: document.getElementById('rememberMe').checked
-                    };
-
-                    console.log('Login attempt:', loginData);
-
-                    // Reset loading state
-                    loginBtn.classList.remove('loading');
-                    loginBtn.disabled = false;
-
-                    // Show success message
-                    alert('Login successful! Redirecting to your dashboard...');
-
-                    // In real app, redirect to dashboard
-                    // window.location.href = '/dashboard';
-                }, 1500);
+                // Let the form submit naturally to Flask
+                console.log('Login form submitted to Flask backend');
             });
 
             // Social login buttons

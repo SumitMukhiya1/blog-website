@@ -1,41 +1,153 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
+
+{% block head %}
+<!-- Move Google Fonts to head for better performance -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Add Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
 {% block content %}
 <style>
+    /* Pure Black & White Color Scheme */
     :root {
         --white: #ffffff;
-        --light: #f8f9fa;
-        --gray-medium: #6c757d;
-        --gray-dark: #343a40;
-        --secondary: #6c63ff;
-        --shadow: rgba(0, 0, 0, 0.05);
-        --shadow-hover: rgba(0, 0, 0, 0.1);
+        --black: #000000;
+        --light-gray: #f8f9fa;
+        --medium-gray: #6c757d;
+        --dark-gray: #495057;
+        --border-color: #e9ecef;
     }
 
-    /* Content Tabs */
+    /* Beautiful Font Family */
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: var(--white);
+        overflow-x: hidden;
+        scroll-behavior: smooth; /* Added smooth scrolling */
+    }
+
+    /* Top Navigation - FIXED FOR MOBILE */
+    .top-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 1000;
+        height: 60px;
+        transition: transform 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .top-navbar.hidden {
+        transform: translateY(-100%);
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .logo {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--black);
+        text-decoration: none;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-link {
+        color: var(--medium-gray);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--black);
+    }
+
+    /* Main Layout */
+    .main-layout {
+        display: flex;
+        max-width: 1200px;
+        margin: 80px auto 0;
+        padding: 0 1rem;
+        gap: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    /* Content Tabs - FIXED SPACING FOR MOBILE - IMPROVED */
     .content-tabs {
         display: flex;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
         background: var(--white);
         position: sticky;
+        top: 60px;
+        z-index: 999;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        transition: top 0.3s ease;
+        margin-bottom: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .content-tabs.sticky {
+        position: fixed;
         top: 0;
-        z-index: 100;
+        left: 0;
+        right: 0;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .content-tabs::-webkit-scrollbar {
+        display: none;
     }
 
     .content-tab {
-        padding: 1.5rem 2rem;
+        padding: 1rem 1.5rem;
         background: none;
         border: none;
-        font-weight: 600;
-        color: #000000;
+        font-weight: 500;
+        color: var(--medium-gray);
         transition: all 0.3s ease;
         position: relative;
         cursor: pointer;
+        flex-shrink: 0;
+        white-space: nowrap;
+        font-size: 0.9rem;
+        font-family: 'Inter', sans-serif;
     }
 
     .content-tab.active {
-        color: #000000;
+        color: var(--black);
+        font-weight: 600;
     }
 
     .content-tab.active::after {
@@ -45,46 +157,184 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: var(--secondary);
+        background: var(--black);
     }
 
-    .content-tab:hover {
-        color: var(--secondary);
-
-        background: var(light);
+    /* Left Sidebar - For PC - MODIFIED TO BE FIXED - WIDTH INCREASED */
+    .left-sidebar {
+        flex: 0 0 350px; /* Increased from 320px to 350px */
+        position: fixed;
+        top: 110px;
+        width: 200px;
+        left: calc(50% - 600px); /* Center alignment based on 1200px max-width */
+        height: calc(100vh - 80px);
+        overflow-y: auto;
+        padding-top: 1rem;
+        box-sizing: border-box;
+        scrollbar-width: thin;
+        scrollbar-color: var(--medium-gray) var(--light-gray);
+        z-index: 900;
     }
 
-    /* Main Content Layout */
-    .main-content {
-        display: grid;
-        grid-template-columns: 1fr 320px;
-        gap: 2rem;
-        max-width: 1200px;
+    .left-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .left-sidebar::-webkit-scrollbar-track {
+        background: var(--light-gray);
+        border-radius: 3px;
+    }
+
+    .left-sidebar::-webkit-scrollbar-thumb {
+        background: var(--medium-gray);
+        border-radius: 3px;
+    }
+
+    .left-sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--dark-gray);
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-links li {
+        margin-bottom: 0.8rem;
+    }
+
+    .sidebar-links a {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: var(--medium-gray);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+        padding: 0.4rem 0;
+    }
+
+    .sidebar-links a:hover {
+        color: var(--black);
+    }
+
+    .sidebar-links i {
+        width: 16px;
+        text-align: center;
+    }
+
+    /* Main Content Area */
+    .main-content-area {
+        flex: 1;
+        max-width: 500px; /* Reduced from 560px to accommodate wider sidebars */
         margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Right Sidebar - For PC - MODIFIED TO BE FIXED - WIDTH INCREASED - SCROLLING REMOVED */
+    .right-sidebar {
+        flex: 0 0 350px; /* Increased from 320px to 350px */
+        position: fixed;
+        top: 100px;
+        right: calc(50% - 600px); /* Center alignment based on 1200px max-width */
+        height: calc(100vh - 160px);
+        overflow-y: hidden; /* Changed from auto to hidden to remove scrolling */
+        width: 250px;
+        padding-top: 1rem;
+        box-sizing: border-box;
+        z-index: 900;
+    }
+
+    .trending-topics {
+        background: var(--light-gray);
+        border-radius: 8px;
         padding: 1.5rem;
     }
 
-    /* Post Cards */
+    .trending-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 1rem;
+    }
+
+    .topic-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .topic-item {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .topic-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .topic-name {
+        font-weight: 500;
+        color: var(--black);
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+    }
+
+    .topic-stats {
+        font-size: 0.8rem;
+        color: var(--medium-gray);
+    }
+
+    /* Post Cards - MOVED CONTENT SLIGHTLY TO RIGHT */
     .post-card {
         background: var(--white);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 12px var(--shadow);
-        margin-bottom: 1.5rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 0;
+        transition: all 0.3s ease;
         display: flex;
         position: relative;
+        padding: 2rem 0;
+        min-height: 200px;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .post-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px var(--shadow-hover);
+        background: var(--light-gray);
     }
 
     .post-content-wrapper {
         flex: 1;
-        padding: 1.5rem;
+        padding-right: 1.5rem;
+        padding-left: 0.8rem;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .post-header {
@@ -94,12 +344,11 @@
     }
 
     .author-avatar {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         object-fit: cover;
-        margin-right: 12px;
-        border: 2px solid var(--light);
+        margin-right: 10px;
     }
 
     .author-info {
@@ -107,233 +356,196 @@
     }
 
     .author-name {
-        font-weight: 600;
-        color: var(--secondary);
+        font-weight: 500;
+        color: var(--black);
         margin: 0;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
+        font-family: 'Inter', sans-serif;
     }
 
     .post-date {
-        color: var(--gray-medium);
-        font-size: 0.8rem;
+        color: var(--medium-gray);
+        font-size: 0.75rem;
         margin: 0;
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
     }
 
     .post-title {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         font-weight: 700;
-        color: var(--gray-dark);
+        color: var(--black);
         margin-bottom: 0.8rem;
-        line-height: 1.4;
+        line-height: 1.3;
+        font-family: 'Playfair Display', serif;
+        letter-spacing: -0.01em;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: 2.6em;
+        min-height: 2.6em;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        max-width: 100%;
     }
 
     .post-description {
-        color: var(--gray-medium);
-        margin-bottom: 1rem;
-        line-height: 1.6;
+        color: var(--medium-gray);
+        margin-bottom: 1.2rem;
+        line-height: 1.5;
         font-size: 0.95rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+        max-height: 3em;
+        text-overflow: ellipsis;
+        min-height: 3em;
     }
 
     .post-image-container {
-        width: 140px;
-        padding: 1.5rem;
+        width: 100px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
     }
 
     .post-image {
         width: 100%;
-        height: 100px;
+        height: 80px;
         object-fit: cover;
-        border-radius: 8px;
-        transition: transform 0.3s ease;
-    }
-
-    .post-card:hover .post-image {
-        transform: scale(1.05);
+        border-radius: 4px;
     }
 
     .post-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        margin-top: auto;
     }
 
     .post-stats {
         display: flex;
         gap: 1rem;
+        align-items: center;
     }
 
     .post-stat {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        color: var(--gray-medium);
-        font-size: 0.85rem;
+        gap: 0.4rem;
+        color: var(--medium-gray);
+        font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.3s ease;
         padding: 0.4rem 0.8rem;
-        border-radius: 6px;
-        font-weight: 500;
+        border-radius: 4px;
+        font-weight: 400;
+        font-family: 'Inter', sans-serif;
     }
 
     .post-stat:hover {
-        background: var(--light);
-        color: var(--secondary);
-        transform: translateY(-1px);
-    }
-
-    .post-stat.active {
-        color: var(--secondary);
+        color: var(--black);
     }
 
     .post-actions {
         display: flex;
         gap: 0.5rem;
+        position: relative;
     }
 
     .post-action {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 6px;
-        background: var(--light);
-        color: var(--gray-medium);
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        background: transparent;
+        color: var(--medium-gray);
         cursor: pointer;
         transition: all 0.3s ease;
         border: none;
+        position: relative;
     }
 
     .post-action:hover {
-        background: var(--secondary);
-        color: var(--white);
-        transform: translateY(-1px);
+        color: var(--black);
+        background: var(--light-gray);
     }
 
     .post-action.active {
-        background: var(--secondary);
-        color: var(--white);
+        color: var(--black);
     }
 
-    /* Sidebar */
-    .sidebar {
-        position: sticky;
-        top: 100px;
-        height: calc(100vh - 120px);
-        overflow-y: auto;
-    }
-
-    .sidebar-card {
+    /* Options Menu */
+    .options-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
         background: var(--white);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 2px 12px var(--shadow);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .sidebar-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--gray-dark);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .sidebar-title i {
-        color: var(--secondary);
-    }
-
-    .trending-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .trending-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.8rem 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        transition: background-color 0.3s ease;
-        cursor: pointer;
         border-radius: 6px;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    .trending-item:hover {
-        background: var(--light);
-    }
-
-    .trending-item:last-child {
-        border-bottom: none;
-    }
-
-    .trending-number {
-        background: var(--secondary);
-        color: var(--white);
-        width: 24px;
-        height: 24px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 600;
-        flex-shrink: 0;
-    }
-
-    .trending-content h5 {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--gray-dark);
-        margin: 0 0 0.2rem 0;
-        line-height: 1.3;
-    }
-
-    .trending-content p {
-        font-size: 0.75rem;
-        color: var(--gray-medium);
-        margin: 0;
-    }
-
-    .tags-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .tag {
-        background: var(--light);
-        color: var(--secondary);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        cursor: pointer;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+        padding: 0.4rem;
+        z-index: 100;
+        min-width: 140px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
         transition: all 0.3s ease;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        text-decoration: none;
-        display: inline-block;
     }
 
-    .tag:hover {
-        background: var(--secondary);
-        color: var(--white);
-        transform: translateY(-1px);
-        text-decoration: none;
+    .options-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(4px);
     }
 
-    /* Comments Modal */
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: 4px;
+        color: var(--dark-gray);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-size: 0.8rem;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+    }
+
+    .menu-item:hover {
+        background: var(--light-gray);
+        color: var(--black);
+    }
+
+    .menu-item i {
+        width: 14px;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+
+    .menu-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 0.2rem 0;
+    }
+
+    /* Comments Modal - IMPROVED FOR MOBILE */
     .comments-modal {
         position: fixed;
         top: 0;
@@ -348,7 +560,8 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
-        backdrop-filter: blur(5px);
+        padding: 1rem;
+        box-sizing: border-box;
     }
 
     .comments-modal.active {
@@ -358,45 +571,49 @@
 
     .comments-container {
         background: var(--white);
-        border-radius: 16px;
-        width: 90%;
-        max-width: 500px;
-        max-height: 80vh;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 400px;
+        max-height: 70vh;
         overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        transform: translateY(20px) scale(0.95);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
 
     .comments-modal.active .comments-container {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 
     .comments-header {
-        padding: 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: var(--light);
+        background: var(--white);
+        flex-shrink: 0;
     }
 
     .comments-header h3 {
         margin: 0;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: var(--gray-dark);
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--black);
+        font-family: 'Inter', sans-serif;
     }
 
     .close-comments {
         background: none;
         border: none;
-        font-size: 1.3rem;
-        color: var(--gray-medium);
+        font-size: 1.1rem;
+        color: var(--medium-gray);
         cursor: pointer;
         transition: color 0.3s ease;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -404,22 +621,24 @@
     }
 
     .close-comments:hover {
-        background: var(--white);
-        color: var(--secondary);
+        background: var(--light-gray);
+        color: var(--black);
     }
 
     .comments-body {
-        padding: 1.5rem;
-        max-height: 50vh;
+        padding: 1rem;
+        max-height: 45vh;
         overflow-y: auto;
+        flex: 1;
     }
 
     .comment {
         display: flex;
-        margin-bottom: 1.2rem;
-        padding-bottom: 1.2rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
         animation: fadeInUp 0.4s ease;
+        will-change: transform, opacity;
     }
 
     @keyframes fadeInUp {
@@ -440,12 +659,11 @@
     }
 
     .comment-avatar {
-        width: 40px;
-        height: 40px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         object-fit: cover;
-        margin-right: 1rem;
-        border: 2px solid var(--light);
+        margin-right: 0.8rem;
     }
 
     .comment-content {
@@ -455,662 +673,987 @@
     .comment-header {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
     }
 
     .comment-author {
-        font-weight: 600;
-        font-size: 0.95rem;
-        color: var(--gray-dark);
+        font-weight: 500;
+        font-size: 0.8rem;
+        color: var(--black);
         margin: 0;
+        font-family: 'Inter', sans-serif;
     }
 
     .comment-date {
-        font-size: 0.8rem;
-        color: var(--gray-medium);
+        font-size: 0.7rem;
+        color: var(--medium-gray);
         margin: 0;
+        font-family: 'Inter', sans-serif;
     }
 
     .comment-text {
-        font-size: 0.9rem;
-        color: var(--gray-medium);
+        font-size: 0.8rem;
+        color: var(--dark-gray);
         margin: 0;
-        line-height: 1.5;
+        line-height: 1.4;
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
     }
 
     .comment-actions {
         display: flex;
-        gap: 1rem;
-        margin-top: 0.8rem;
+        gap: 0.8rem;
+        margin-top: 0.6rem;
     }
 
     .comment-action {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
-        font-size: 0.8rem;
-        color: var(--gray-medium);
+        gap: 0.3rem;
+        font-size: 0.7rem;
+        color: var(--medium-gray);
         cursor: pointer;
         transition: color 0.3s ease;
-        padding: 0.3rem 0.6rem;
-        border-radius: 4px;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Inter', sans-serif;
     }
 
     .comment-action:hover {
-        background: var(--light);
-        color: var(--secondary);
+        background: var(--light-gray);
+        color: var(--black);
     }
 
     .comments-footer {
-        padding: 1.5rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        background: var(--light);
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+        background: var(--white);
+        flex-shrink: 0;
     }
 
     .comment-form {
         display: flex;
-        gap: 1rem;
+        gap: 0.6rem;
+        align-items: flex-end;
     }
 
     .comment-input {
         flex: 1;
-        padding: 0.8rem 1.2rem;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 25px;
-        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        font-size: 0.8rem;
         transition: all 0.3s ease;
         background: var(--white);
         outline: none;
+        resize: none;
+        min-height: 36px;
+        max-height: 80px;
+        font-family: 'Inter', sans-serif;
+        box-sizing: border-box;
     }
 
     .comment-input:focus {
-        border-color: var(--secondary);
-        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        border-color: var(--black);
     }
 
     .comment-submit {
-        background: var(--secondary);
+        background: var(--black);
         color: var(--white);
         border: none;
-        border-radius: 25px;
-        padding: 0 1.5rem;
-        font-weight: 600;
+        border-radius: 16px;
+        padding: 0.6rem 1rem;
+        font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
-        min-width: 80px;
+        min-width: 60px;
+        font-size: 0.8rem;
+        font-family: 'Inter', sans-serif;
     }
 
     .comment-submit:hover {
-        background: #5a52d5;
-        transform: translateY(-1px);
+        background: var(--dark-gray);
     }
 
-    /* Responsive Design */
-    @media (max-width: 991.98px) {
-        .main-content {
-            grid-template-columns: 1fr;
-            padding: 1rem;
-            gap: 1rem;
-            max-width: 100%;
-        }
-
-        .sidebar {
+    /* Mobile Styles - FIXED FOR RESPONSIVENESS - IMPROVED "FOR YOU" SECTION */
+    @media (max-width: 1024px) {
+        .left-sidebar, .right-sidebar {
             display: none;
         }
 
-        /* Mobile Post Improvements */
-        .post-card {
+        .main-layout {
             flex-direction: column;
-            margin-bottom: 1.5rem;
+            gap: 0;
+            margin-top: 60px;
             padding: 0;
             width: 100%;
-            border-radius: 12px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .main-content-area {
+            max-width: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            padding: 0;
+        }
+
+        /* Content tabs - MADE FIXED AND CLOSER TO NAVBAR */
+        .content-tabs {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 998;
+            padding: 0 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .top-navbar {
+            display: flex;
+            padding: 0 1rem;
+        }
+
+        .nav-container {
+            padding: 0;
+        }
+
+        .post-card {
+            padding: 1.5rem 1rem;
+            min-height: 180px;
+            width: 100%;
+            box-sizing: border-box;
+            border-left: none;
+            border-right: none;
         }
 
         .post-content-wrapper {
-            padding: 1.2rem;
+            padding-left: 0.5rem;
+            padding-right: 1rem;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .post-image-container {
+            padding-right: 0;
+        }
+
+        .post-title {
+            font-size: 1.3rem;
+            -webkit-line-clamp: 2;
+            max-height: 2.8em;
+            min-height: 2.8em;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-description {
+            margin-bottom: 1rem;
+        }
+
+        .post-header {
+            margin-bottom: 0.8rem;
+        }
+
+        /* Ensure posts column doesn't cause horizontal scroll */
+        .posts-column {
+            width: 100%;
+            overflow-x: hidden;
+            padding: 0;
+            margin-top: 60px;
+        }
+
+        /* Improved comments modal for mobile */
+        .comments-modal {
+            padding: 0.5rem;
+        }
+
+        .comments-container {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 12px;
+        }
+
+        .comments-body {
+            max-height: 60vh;
+        }
+    }
+
+    /* Small Mobile Optimizations - IMPROVED */
+    @media (max-width: 480px) {
+        .main-layout {
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .content-tabs {
+            padding: 0 0.8rem;
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .post-content-wrapper {
+            padding-left: 0.3rem;
+            padding-right: 0.8rem;
             width: 100%;
         }
 
         .post-image-container {
-            width: 100%;
-            padding: 0 1.2rem 1.2rem;
-            order: 3;
+            padding-right: 0;
+            width: 80px;
         }
 
         .post-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .post-title {
-            font-size: 1.4rem;
-            line-height: 1.4;
-        }
-
-        .post-description {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .post-footer {
-            padding: 1rem 0 0;
-        }
-
-        .content-tabs {
-            margin-bottom: 1rem;
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            position: relative;
-            top: 0;
-        }
-
-        .content-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .content-tab {
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .post-stat {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .post-action {
-            width: 44px;
-            height: 44px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .main-content {
-            padding: 0.5rem;
-        }
-
-        .post-card {
-            margin-bottom: 1rem;
-            border-radius: 10px;
-        }
-
-        .post-content-wrapper {
-            padding: 1rem;
+            height: 60px;
         }
 
         .post-title {
             font-size: 1.2rem;
+            -webkit-line-clamp: 2;
+            max-height: 2.8em;
+            min-height: 2.8em;
         }
 
-        .post-image {
-            height: 160px;
-        }
-
-        .post-stats {
-            gap: 0.5rem;
+        .post-card {
+            min-height: 160px;
+            width: 100%;
+            padding: 1.2rem 0.8rem;
         }
 
         .post-stat {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.85rem;
+            padding: 0.3rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .post-action {
+            width: 28px;
+            height: 28px;
         }
 
         .content-tab {
             padding: 0.8rem 1.2rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .comments-modal {
+            padding: 0.2rem;
         }
 
         .comments-container {
-            width: 95%;
-            margin: 1rem;
+            margin: 0;
+            border-radius: 8px;
+        }
+
+        .options-menu {
+            min-width: 130px;
+        }
+
+        /* Fix navbar for very small screens */
+        .top-navbar {
+            padding: 0 0.8rem;
+        }
+
+        .nav-links {
+            gap: 1rem;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+        }
+
+        .logo {
+            font-size: 1.3rem;
         }
     }
 
-    /* Hide mobile bottom navigation */
-    .mobile-bottom-nav {
-        display: none !important;
+    /* Tablet and Desktop Styles */
+    @media (min-width: 768px) {
+        .content-tabs {
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .content-tab {
+            padding: 1.2rem 2rem;
+            font-size: 0.95rem;
+        }
+
+        .post-card {
+            padding: 2.2rem 0;
+            min-height: 220px;
+            width: 100%;
+        }
+
+        .post-image-container {
+            width: 120px;
+        }
+
+        .post-image {
+            height: 90px;
+        }
+
+        .post-stats {
+            gap: 1rem;
+        }
+
+        .post-stat {
+            padding: 0.4rem 0.8rem;
+        }
+
+        .post-actions {
+            gap: 0.5rem;
+        }
+
+        .post-content-wrapper {
+            padding-left: 0.8rem;
+            width: 100%;
+        }
+
+        .post-image-container {
+            padding-right: 0;
+        }
+
+        .post-title {
+            font-size: 1.5rem;
+            -webkit-line-clamp: 2;
+            max-height: 2.6em;
+            min-height: 2.6em;
+        }
+    }
+
+    /* Very Small Mobile Optimizations */
+    @media (max-width: 380px) {
+        .main-content-area {
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .post-content-wrapper {
+            padding-right: 0.6rem;
+            padding-left: 0.2rem;
+            width: 100%;
+        }
+
+        .post-title {
+            font-size: 1.1rem;
+            -webkit-line-clamp: 2;
+            max-height: 2.8em;
+            min-height: 2.8em;
+        }
+
+        .post-image-container {
+            width: 70px;
+            padding-right: 0;
+        }
+
+        .post-image {
+            height: 50px;
+        }
+
+        .post-stat {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+        }
+
+        .post-action {
+            width: 26px;
+            height: 26px;
+        }
+
+        .content-tab {
+            padding: 0.7rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .comments-container {
+            margin: 0;
+        }
+
+        .options-menu {
+            min-width: 120px;
+        }
+
+        .post-card {
+            min-height: 150px;
+            width: 100%;
+            padding: 1rem 0.6rem;
+        }
+
+        /* Fix navbar for very small screens */
+        .top-navbar {
+            padding: 0 0.6rem;
+        }
+
+        .nav-links {
+            gap: 0.8rem;
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+        }
+    }
+
+    /* Large desktop screens */
+    @media (min-width: 1200px) {
+        .post-title {
+            font-size: 1.6rem;
+            -webkit-line-clamp: 2;
+            max-height: 2.6em;
+            min-height: 2.6em;
+        }
+    }
+
+    /* Fix for horizontal scrolling on all devices */
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    * {
+        box-sizing: border-box;
     }
 </style>
 
-<!-- Content Tabs -->
-<div class="container">
-    <div class="content-tabs">
-        <button class="content-tab active">For You</button>
-        <button class="content-tab">Featured</button>
+<!-- Top Navigation -->
+<nav class="top-navbar">
+    <div class="nav-container">
+        <a href="#" class="logo">BlogSpace</a>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Explore</a>
+            <a href="#" class="nav-link">Bookmarks</a>
+            <a href="#" class="nav-link">Profile</a>
+        </div>
     </div>
-</div>
+</nav>
 
-<!-- Main Content -->
-<div class="main-content">
-    <!-- Posts Column -->
-    <div class="posts-column">
-        <!-- Post 1 -->
-        <div class="post-card">
-            <div class="post-content-wrapper">
-                <div class="post-header">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Author" class="author-avatar">
-                    <div class="author-info">
-                        <h4 class="author-name">Sarah Johnson</h4>
-                        <p class="post-date">May 15, 2023 • 5 min read</p>
-                    </div>
-                </div>
-                <h2 class="post-title">The Art of Mindful Living in a Digital World</h2>
-                <p class="post-description">Discover how to find balance and presence in our increasingly connected world. Practical tips for digital detox and mindful technology use that will transform your daily routine.</p>
-                <div class="post-footer">
-                    <div class="post-stats">
-                        <div class="post-stat like-btn">
-                            <i class="far fa-heart"></i>
-                            <span>142</span>
-                        </div>
-                        <div class="post-stat comment-btn">
-                            <i class="far fa-comment"></i>
-                            <span>24</span>
-                        </div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action show-less-btn">
-                            <i class="fas fa-chevron-up"></i>
-                        </div>
-                        <div class="post-action bookmark-btn">
-                            <i class="far fa-bookmark"></i>
-                        </div>
-                        <div class="post-action more-options-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="post-image-container">
-                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Mindful living" class="post-image">
-            </div>
+<!-- Main Layout -->
+<div class="main-layout">
+    <!-- Left Sidebar - For PC -->
+    <div class="left-sidebar">
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Navigation</h3>
+            <ul class="sidebar-links">
+                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-fire"></i> Popular</a></li>
+                <li><a href="#"><i class="fas fa-bookmark"></i> Bookmarks</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> Reading History</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
         </div>
 
-        <!-- Post 2 -->
-        <div class="post-card">
-            <div class="post-content-wrapper">
-                <div class="post-header">
-                    <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Author" class="author-avatar">
-                    <div class="author-info">
-                        <h4 class="author-name">Michael Chen</h4>
-                        <p class="post-date">May 12, 2023 • 7 min read</p>
-                    </div>
-                </div>
-                <h2 class="post-title">How I Traveled the World on a Budget</h2>
-                <p class="post-description">From Southeast Asia to South America, learn the secrets to affordable long-term travel without sacrificing experiences. Budget-friendly tips and hidden gems.</p>
-                <div class="post-footer">
-                    <div class="post-stats">
-                        <div class="post-stat like-btn">
-                            <i class="far fa-heart"></i>
-                            <span>98</span>
-                        </div>
-                        <div class="post-stat comment-btn">
-                            <i class="far fa-comment"></i>
-                            <span>17</span>
-                        </div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action show-less-btn">
-                            <i class="fas fa-chevron-up"></i>
-                        </div>
-                        <div class="post-action bookmark-btn">
-                            <i class="far fa-bookmark"></i>
-                        </div>
-                        <div class="post-action more-options-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="post-image-container">
-                <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Travel" class="post-image">
-            </div>
-        </div>
-
-        <!-- Post 3 -->
-        <div class="post-card">
-            <div class="post-content-wrapper">
-                <div class="post-header">
-                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Author" class="author-avatar">
-                    <div class="author-info">
-                        <h4 class="author-name">Emma Rodriguez</h4>
-                        <p class="post-date">May 10, 2023 • 4 min read</p>
-                    </div>
-                </div>
-                <h2 class="post-title">Building Meaningful Connections in the Digital Age</h2>
-                <p class="post-description">In a world of digital connections, how do we foster genuine relationships? Explore strategies for creating authentic connections online and offline.</p>
-                <div class="post-footer">
-                    <div class="post-stats">
-                        <div class="post-stat like-btn">
-                            <i class="far fa-heart"></i>
-                            <span>76</span>
-                        </div>
-                        <div class="post-stat comment-btn">
-                            <i class="far fa-comment"></i>
-                            <span>12</span>
-                        </div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action show-less-btn">
-                            <i class="fas fa-chevron-up"></i>
-                        </div>
-                        <div class="post-action bookmark-btn">
-                            <i class="far fa-bookmark"></i>
-                        </div>
-                        <div class="post-action more-options-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="post-image-container">
-                <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Connections" class="post-image">
-            </div>
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Topics</h3>
+            <ul class="sidebar-links">
+                <li><a href="#"><i class="fas fa-code"></i> Programming</a></li>
+                <li><a href="#"><i class="fas fa-paint-brush"></i> Design</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Business</a></li>
+                <li><a href="#"><i class="fas fa-heartbeat"></i> Health</a></li>
+                <li><a href="#"><i class="fas fa-globe"></i> Travel</a></li>
+            </ul>
         </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <!-- Who to Follow -->
-        <div class="sidebar-card">
-            <h4 class="sidebar-title">
-                <i class="fas fa-user-plus"></i>
-                Who to Follow
-            </h4>
-            <ul class="trending-list">
-                <li class="trending-item">
-                    <img src="https://randomuser.me/api/portraits/women/26.jpg" alt="User" class="author-avatar">
-                    <div class="trending-content">
-                        <h5>Jessica Williams</h5>
-                        <p>Productivity Expert</p>
+    <!-- Main Content Area -->
+    <div class="main-content-area">
+        <!-- Content Tabs - Only For You and Featured -->
+        <div class="content-tabs">
+            <button class="content-tab active">For You</button>
+            <button class="content-tab">Featured</button>
+        </div>
+
+        <!-- Posts Column -->
+        <div class="posts-column">
+            <!-- Dynamic Blog Posts - Initial 10 posts -->
+            {% for blog in blogs[:10] %}
+            <div class="post-card" data-post-id="{{ blog.id }}">
+                <div class="post-content-wrapper">
+                    <div class="post-header">
+                        <img src="{{ url_for('static', filename='profile_pics/' + (blog.profile_image or 'default.jpg')) }}" alt="Author" class="author-avatar">
+                        <div class="author-info">
+                            <h4 class="author-name">{{ blog.name }}</h4>
+                            <p class="post-date">
+                                {% if blog.date %}
+                                    {{ blog.date.strftime('%b %d, %Y') }}
+                                {% else %}
+                                    May 15, 2023
+                                {% endif %}
+                                • {{ ((blog.content|default('')|length / 200)|round|int) }} min read
+                            </p>
+                        </div>
                     </div>
-                    <button class="btn btn-sm" style="background: var(--light); color: var(--secondary); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 20px; padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 600;">Follow</button>
+
+                    <h2 class="post-title">{{ blog.title }}</h2>
+
+                    <p class="post-description">
+                        {% if blog.content %}
+                            {{ blog.content|striptags|truncate(120) }}
+                        {% else %}
+                            No content available for this post.
+                        {% endif %}
+                    </p>
+
+                    <div class="post-footer">
+                        <!-- Left side: Like and Comment -->
+                        <div class="post-stats">
+                            <div class="post-stat like-btn" aria-label="Like post">
+                                <i class="far fa-heart"></i>
+                                <span>{{ blog.likes|default(42) }}</span>
+                            </div>
+                            <div class="post-stat comment-btn" data-blog-id="{{ blog.id }}" aria-label="View comments">
+                                <i class="far fa-comment"></i>
+                                <span>{{ blog.Comments|default([])|length }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Right side: Bookmark and Menu -->
+                        <div class="post-actions">
+                            <div class="post-action bookmark-btn" title="Save for later" aria-label="Bookmark post">
+                                <i class="far fa-bookmark"></i>
+                            </div>
+                            <div class="post-action more-options-btn" title="More options" aria-label="More options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+
+                            <!-- Options Menu -->
+                            <div class="options-menu">
+                                <button class="menu-item" aria-label="Follow author">
+                                    <i class="fas fa-user-plus"></i>
+                                    Follow
+                                </button>
+                                <button class="menu-item" aria-label="Save post">
+                                    <i class="far fa-bookmark"></i>
+                                    Save
+                                </button>
+                                <div class="menu-divider"></div>
+                                <button class="menu-item" aria-label="Report post">
+                                    <i class="fas fa-flag"></i>
+                                    Report
+                                </button>
+                                <button class="menu-item" aria-label="Share post">
+                                    <i class="fas fa-share"></i>
+                                    Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Featured Image on the right side -->
+                <div class="post-image-container">
+                    {% if blog.image %}
+                        <img src="{{ url_for('static', filename='featured_images/' + blog.image) }}" alt="{{ blog.title }}" class="post-image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='defaults/default-blog.jpg') }}" alt="Default Blog Image" class="post-image">
+                    {% endif %}
+                </div>
+                <!-- Comment Modal -->
+                <div class="comments-modal">
+                    <div class="comments-container">
+                        <div class="comments-header">
+                            <h3>Comments</h3>
+                            <button type="button" class="close-comments" aria-label="Close comments">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="comments-body" id="comments-list-{{ blog.id }}">
+                            <!-- Comments will be loaded dynamically via JavaScript -->
+                            <!-- Display existing comments -->
+                            {% for comment in blog.Comments %}
+                            <div class="comment">
+                                <img src="{{ url_for('static', filename='profile_pics/' + comment.user_profile_image) if comment.user_profile_image
+                                else 'https://randomuser.me/api/portraits/men/75.jpg' }}" alt="User" class="comment-avatar">
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <h4 class="comment-author">{{ comment.user_name }}</h4>
+                                        <p class="comment-date">{{ comment.date }}</p>
+                                    </div>
+                                    <p class="comment-text">{{ comment.content }}</p>
+                                    <div class="comment-actions">
+                                        <div class="comment-action" aria-label="Like comment">
+                                            <i class="far fa-heart"></i>
+                                            <span>12</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <!-- Default comment when no comments exist -->
+                            <div class="no-comments">
+                                <p>No comments yet. Be the first to comment!</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="comments-footer">
+                            <form action="{{ url_for('comment') }}" method="POST" class="comment-form">
+                                <textarea class="comment-input" name="content" placeholder="Add a comment..." required aria-label="Write a comment"></textarea>
+                                <!-- Hidden input to store blog_id -->
+                                <input type="hidden" name="blog_id" value="{{ blog.id }}">
+                                <button type="submit" class="comment-submit" aria-label="Post comment">Post</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Show sample posts only if no blogs exist -->
+            {% if blogs|length == 0 %}
+            <!-- Sample Post 1 -->
+            <div class="post-card">
+                <div class="post-content-wrapper">
+                    <div class="post-header">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Author" class="author-avatar">
+                        <div class="author-info">
+                            <h4 class="author-name">Sarah Johnson</h4>
+                            <p class="post-date">May 15, 2023 • 5 min read</p>
+                        </div>
+                    </div>
+                    <h2 class="post-title">The Art of Mindful Living in a Digital World</h2>
+                    <p class="post-description">Discover how to find balance and presence in our increasingly connected world. Practical tips for digital detox and mindful technology use.</p>
+                    <div class="post-footer">
+                        <div class="post-stats">
+                            <div class="post-stat like-btn" aria-label="Like post">
+                                <i class="far fa-heart"></i>
+                                <span>142</span>
+                            </div>
+                            <div class="post-stat comment-btn" data-blog-id="sample-1" aria-label="View comments">
+                                <i class="far fa-comment"></i>
+                                <span>24</span>
+                            </div>
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action bookmark-btn" title="Save for later" aria-label="Bookmark post">
+                                <i class="far fa-bookmark"></i>
+                            </div>
+                            <div class="post-action more-options-btn" title="More options" aria-label="More options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+
+                            <!-- Options Menu -->
+                            <div class="options-menu">
+                                <button class="menu-item" aria-label="Follow author">
+                                    <i class="fas fa-user-plus"></i>
+                                    Follow
+                                </button>
+                                <button class="menu-item" aria-label="Save post">
+                                    <i class="far fa-bookmark"></i>
+                                    Save
+                                </button>
+                                <div class="menu-divider"></div>
+                                <button class="menu-item" aria-label="Report post">
+                                    <i class="fas fa-flag"></i>
+                                    Report
+                                </button>
+                                <button class="menu-item" aria-label="Share post">
+                                    <i class="fas fa-share"></i>
+                                    Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Featured Image on the right side -->
+                <div class="post-image-container">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Post image" class="post-image">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Sidebar - For PC -->
+    <div class="right-sidebar">
+        <div class="trending-topics">
+            <h3 class="trending-title">Trending Topics</h3>
+            <ul class="topic-list">
+                <li class="topic-item">
+                    <div class="topic-name">Artificial Intelligence</div>
+                    <div class="topic-stats">1.2K posts • Trending</div>
                 </li>
-                <li class="trending-item">
-                    <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User" class="author-avatar">
-                    <div class="trending-content">
-                        <h5>David Kim</h5>
-                        <p>Travel Writer</p>
-                    </div>
-                    <button class="btn btn-sm" style="background: var(--light); color: var(--secondary); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 20px; padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 600;">Follow</button>
+                <li class="topic-item">
+                    <div class="topic-name">Web Development</div>
+                    <div class="topic-stats">856 posts • Popular</div>
                 </li>
-                <li class="trending-item">
-                    <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="User" class="author-avatar">
-                    <div class="trending-content">
-                        <h5>Maria Garcia</h5>
-                        <p>Mindfulness Coach</p>
-                    </div>
-                    <button class="btn btn-sm" style="background: var(--light); color: var(--secondary); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 20px; padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 600;">Follow</button>
+                <li class="topic-item">
+                    <div class="topic-name">Digital Marketing</div>
+                    <div class="topic-stats">723 posts • Trending</div>
+                </li>
+                <li class="topic-item">
+                    <div class="topic-name">Remote Work</div>
+                    <div class="topic-stats">645 posts • Popular</div>
+                </li>
+                <li class="topic-item">
+                    <div class="topic-name">UX Design</div>
+                    <div class="topic-stats">512 posts • Trending</div>
                 </li>
             </ul>
         </div>
 
-        <!-- Trending Stories -->
-        <div class="sidebar-card">
-            <h4 class="sidebar-title">
-                <i class="fas fa-chart-line"></i>
-                Trending Now
-            </h4>
-            <ul class="trending-list">
-                <li class="trending-item">
-                    <div class="trending-number">1</div>
-                    <div class="trending-content">
-                        <h5>The Future of Remote Work</h5>
-                        <p>2.4K reads • 142 likes</p>
+        <div class="trending-topics" style="margin-top: 1.5rem;">
+            <h3 class="trending-title">Who to Follow</h3>
+            <ul class="topic-list">
+                <li class="topic-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" style="width: 32px; height: 32px; border-radius: 50%;">
+                        <div>
+                            <div class="topic-name">Michael Chen</div>
+                            <div class="topic-stats">Tech Writer</div>
+                        </div>
                     </div>
                 </li>
-                <li class="trending-item">
-                    <div class="trending-number">2</div>
-                    <div class="trending-content">
-                        <h5>Minimalism: Less is More</h5>
-                        <p>1.8K reads • 98 likes</p>
+                <li class="topic-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" style="width: 32px; height: 32px; border-radius: 50%;">
+                        <div>
+                            <div class="topic-name">Emma Rodriguez</div>
+                            <div class="topic-stats">Design Expert</div>
+                        </div>
                     </div>
                 </li>
-                <li class="trending-item">
-                    <div class="trending-number">3</div>
-                    <div class="trending-content">
-                        <h5>Building a Personal Brand</h5>
-                        <p>1.5K reads • 76 likes</p>
-                    </div>
-                </li>
-                <li class="trending-item">
-                    <div class="trending-number">4</div>
-                    <div class="trending-content">
-                        <h5>Digital Detox Strategies</h5>
-                        <p>1.2K reads • 64 likes</p>
+                <li class="topic-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User" style="width: 32px; height: 32px; border-radius: 50%;">
+                        <div>
+                            <div class="topic-name">David Park</div>
+                            <div class="topic-stats">Product Manager</div>
+                        </div>
                     </div>
                 </li>
             </ul>
-        </div>
-
-        <!-- Popular Tags -->
-        <div class="sidebar-card">
-            <h4 class="sidebar-title">
-                <i class="fas fa-tags"></i>
-                Popular Topics
-            </h4>
-            <div class="tags-container">
-                <a href="#" class="tag">Mindfulness</a>
-                <a href="#" class="tag">Travel</a>
-                <a href="#" class="tag">Productivity</a>
-                <a href="#" class="tag">Relationships</a>
-                <a href="#" class="tag">Self-Care</a>
-                <a href="#" class="tag">Career Growth</a>
-                <a href="#" class="tag">Writing</a>
-                <a href="#" class="tag">Creativity</a>
-                <a href="#" class="tag">Technology</a>
-                <a href="#" class="tag">Health</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Comments Modal -->
-<div class="comments-modal">
-    <div class="comments-container">
-        <div class="comments-header">
-            <h3>Comments</h3>
-            <button class="close-comments">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="comments-body">
-            <div class="comment">
-                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User" class="comment-avatar">
-                <div class="comment-content">
-                    <div class="comment-header">
-                        <h4 class="comment-author">James Wilson</h4>
-                        <p class="comment-date">2 days ago</p>
-                    </div>
-                    <p class="comment-text">Thank you for sharing this perspective. It's exactly what I needed to read today! The points about digital mindfulness really resonated with me.</p>
-                    <div class="comment-actions">
-                        <div class="comment-action">
-                            <i class="far fa-heart"></i>
-                            <span>12</span>
-                        </div>
-                        <div class="comment-action">
-                            <i class="fas fa-reply"></i>
-                            <span>Reply</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="comment">
-                <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User" class="comment-avatar">
-                <div class="comment-content">
-                    <div class="comment-header">
-                        <h4 class="comment-author">Sophia Martinez</h4>
-                        <p class="comment-date">1 day ago</p>
-                    </div>
-                    <p class="comment-text">I've been practicing digital detox weekends for a month now, and the difference in my mental clarity is remarkable. Great article!</p>
-                    <div class="comment-actions">
-                        <div class="comment-action">
-                            <i class="far fa-heart"></i>
-                            <span>8</span>
-                        </div>
-                        <div class="comment-action">
-                            <i class="fas fa-reply"></i>
-                            <span>Reply</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="comment">
-                <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="User" class="comment-avatar">
-                <div class="comment-content">
-                    <div class="comment-header">
-                        <h4 class="comment-author">Robert Chen</h4>
-                        <p class="comment-date">5 hours ago</p>
-                    </div>
-                    <p class="comment-text">Could you elaborate more on the specific apps or tools you use for digital mindfulness? I'd love to implement some of these strategies.</p>
-                    <div class="comment-actions">
-                        <div class="comment-action">
-                            <i class="far fa-heart"></i>
-                            <span>3</span>
-                        </div>
-                        <div class="comment-action">
-                            <i class="fas fa-reply"></i>
-                            <span>Reply</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="comments-footer">
-            <div class="comment-form">
-                <input type="text" class="comment-input" placeholder="Add a comment...">
-                <button class="comment-submit">Post</button>
-            </div>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    // Scroll-based navbar behavior - Fixed version
+    let lastScrollTop = 0;
+    const navbar = document.querySelector('.top-navbar');
+    const contentTabs = document.querySelector('.content-tabs');
+    const isMobile = window.innerWidth <= 1024;
+
+    if (!isMobile) {
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Simplified scroll logic - only handle sticky tabs
+            if (scrollTop > 120) {
+                contentTabs.classList.add('sticky');
+                navbar.classList.add('hidden');
+            } else {
+                contentTabs.classList.remove('sticky');
+                navbar.classList.remove('hidden');
+            }
+
+            lastScrollTop = scrollTop;
+        });
+    }
+
+    // Consolidated click event delegation
+    document.addEventListener('click', function(e) {
         // Like functionality
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const icon = this.querySelector('i');
-                const count = this.querySelector('span');
-                let currentCount = parseInt(count.textContent);
+        if (e.target.closest('.like-btn')) {
+            const btn = e.target.closest('.like-btn');
+            const icon = btn.querySelector('i');
+            const count = btn.querySelector('span');
+            let currentCount = parseInt(count.textContent.replace(/,/g, '')) || 0;
+
+            if (icon.classList.contains('far')) {
+                icon.classList.replace('far', 'fas');
+                count.textContent = currentCount + 1;
+                btn.classList.add('active');
+            } else {
+                icon.classList.replace('fas', 'far');
+                count.textContent = currentCount - 1;
+                btn.classList.remove('active');
+            }
+        }
+
+        // Bookmark functionality
+        else if (e.target.closest('.bookmark-btn')) {
+            const btn = e.target.closest('.bookmark-btn');
+            const icon = btn.querySelector('i');
+
+            if (icon.classList.contains('far')) {
+                icon.classList.replace('far', 'fas');
+                btn.classList.add('active');
+            } else {
+                icon.classList.replace('fas', 'far');
+                btn.classList.remove('active');
+            }
+        }
+
+        // Options menu functionality
+        else if (e.target.closest('.more-options-btn')) {
+            const moreOptionsBtn = e.target.closest('.more-options-btn');
+            const menu = moreOptionsBtn.nextElementSibling;
+
+            // Close all other menus
+            document.querySelectorAll('.options-menu').forEach(otherMenu => {
+                if (otherMenu !== menu) {
+                    otherMenu.classList.remove('active');
+                }
+            });
+
+            // Toggle current menu
+            if (menu && menu.classList.contains('options-menu')) {
+                menu.classList.toggle('active');
+                e.stopPropagation();
+            }
+        }
+
+        // Menu item clicks - stop propagation to prevent immediate close
+        else if (e.target.closest('.menu-item')) {
+            const menuItem = e.target.closest('.menu-item');
+            e.stopPropagation(); // Prevent menu from closing immediately
+
+            // Handle menu item action here
+            const menu = menuItem.closest('.options-menu');
+            if (menu) {
+                // Close menu after click
+                setTimeout(() => {
+                    menu.classList.remove('active');
+                }, 300);
+            }
+        }
+
+        // Comment functionality
+        else if (e.target.closest('.comment-btn')) {
+            const commentBtn = e.target.closest('.comment-btn');
+            const blogId = commentBtn.getAttribute('data-blog-id');
+            openCommentsModal(blogId);
+        }
+
+        // Comment like functionality
+        else if (e.target.closest('.comment-action')) {
+            const action = e.target.closest('.comment-action');
+            const icon = action.querySelector('.fa-heart');
+
+            if (icon) {
+                const count = action.querySelector('span');
+                let currentCount = parseInt(count.textContent.replace(/,/g, '')) || 0;
 
                 if (icon.classList.contains('far')) {
                     icon.classList.replace('far', 'fas');
                     count.textContent = currentCount + 1;
-                    this.classList.add('active');
                 } else {
                     icon.classList.replace('fas', 'far');
                     count.textContent = currentCount - 1;
-                    this.classList.remove('active');
                 }
-            });
-        });
-
-        // Bookmark functionality
-        document.querySelectorAll('.bookmark-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const icon = this.querySelector('i');
-
-                if (icon.classList.contains('far')) {
-                    icon.classList.replace('far', 'fas');
-                    this.classList.add('active');
-                } else {
-                    icon.classList.replace('fas', 'far');
-                    this.classList.remove('active');
-                }
-            });
-        });
-
-        // Show less functionality
-        document.querySelectorAll('.show-less-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const postCard = this.closest('.post-card');
-                postCard.style.opacity = '0';
-                postCard.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    postCard.style.display = 'none';
-                }, 300);
-                console.log('Post hidden');
-            });
-        });
-
-        // Comments functionality
-        const commentBtns = document.querySelectorAll('.comment-btn');
-        const commentsModal = document.querySelector('.comments-modal');
-        const closeComments = document.querySelector('.close-comments');
-
-        commentBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                commentsModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        closeComments.addEventListener('click', function() {
-            commentsModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        });
-
-        commentsModal.addEventListener('click', function(e) {
-            if (e.target === commentsModal) {
-                commentsModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
             }
-        });
+        }
 
-        // Content tabs functionality
-        const contentTabs = document.querySelectorAll('.content-tab');
-
-        contentTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                contentTabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Comment submission
-        const commentSubmit = document.querySelector('.comment-submit');
-        const commentInput = document.querySelector('.comment-input');
-
-        commentSubmit.addEventListener('click', function() {
-            const commentText = commentInput.value.trim();
-            if (commentText) {
-                console.log('New comment:', commentText);
-                commentInput.value = '';
-
-                // Add success feedback
-                this.textContent = 'Posted!';
-                this.style.background = '#28a745';
-                setTimeout(() => {
-                    this.textContent = 'Post';
-                    this.style.background = '';
-                }, 2000);
-            }
-        });
-
-        commentInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                commentSubmit.click();
-            }
-        });
-
-        // Enhanced hover effects for mobile
-        if (window.innerWidth <= 991) {
-            document.querySelectorAll('.post-card').forEach(card => {
-                card.addEventListener('touchstart', function() {
-                    this.style.transform = 'translateY(-2px)';
-                });
-
-                card.addEventListener('touchend', function() {
-                    this.style.transform = '';
-                });
+        // Close options menus when clicking outside
+        else {
+            document.querySelectorAll('.options-menu').forEach(menu => {
+                menu.classList.remove('active');
             });
         }
     });
+
+    // Open comments modal - FIXED to work with multiple modals
+    function openCommentsModal(blogId) {
+        // Find the specific modal for this blog post
+        const postCard = document.querySelector(`.post-card[data-post-id="${blogId}"]`);
+        if (postCard) {
+            const modal = postCard.querySelector('.comments-modal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                // Focus on comment input for better mobile experience
+                setTimeout(() => {
+                    const commentInput = modal.querySelector('.comment-input');
+                    if (commentInput) {
+                        commentInput.focus();
+                    }
+                }, 300);
+            }
+        }
+    }
+
+    // Comments modal close functionality - FIXED for multiple modals
+    document.addEventListener('click', function(e) {
+        // Close comments modal when clicking close button
+        if (e.target.closest('.close-comments')) {
+            const closeBtn = e.target.closest('.close-comments');
+            const modal = closeBtn.closest('.comments-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close comments modal when clicking outside
+        if (e.target.classList.contains('comments-modal')) {
+            e.target.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Content tabs functionality
+    const contentTabButtons = document.querySelectorAll('.content-tab');
+    contentTabButtons.forEach(tab => {
+        tab.addEventListener('click', function() {
+            contentTabButtons.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Notification function
+    function showNotification(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--black);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.4s ease;
+            max-width: 90vw;
+            word-wrap: break-word;
+            text-align: center;
+        `;
+
+        document.body.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+        }, 10);
+
+        // Animate out and remove
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-100px)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 400);
+        }, 3000);
+    }
+});
 </script>
 {% endblock %}

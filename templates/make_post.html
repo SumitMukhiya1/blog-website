@@ -32,17 +32,20 @@
             background-color: var(--white);
             color: var(--secondary);
             line-height: 1.6;
+            padding: 0;
+            margin: 0;
         }
 
-        /* Navbar */
-        .navbar-clean {
+        /* Desktop Navigation */
+        .desktop-nav {
+            display: none;
             background: var(--white);
             box-shadow: var(--shadow);
             padding: 1rem 0;
             border-bottom: 1px solid var(--border);
         }
 
-        .navbar-brand-clean {
+        .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
             display: flex;
@@ -51,41 +54,92 @@
             text-decoration: none;
         }
 
-        .navbar-brand-clean i {
+        .navbar-brand i {
             color: var(--secondary);
             font-size: 1.5rem;
             margin-right: 0.5rem;
         }
 
-        /* Editor Container */
-        .editor-container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+        /* Fixed Back Button - Small and Clean */
+        .fixed-back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            text-decoration: none;
+            color: var(--secondary);
+            background: var(--white);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
+        .fixed-back-button:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .fixed-back-button i {
+            font-size: 1rem;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .mobile-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        /* Main Container with Mobile Padding */
+        .main-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+            padding-top: 1.5rem; /* Added space for fixed back button */
+        }
+
+        /* Editor Header - Mobile Optimized */
         .editor-header {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             text-align: center;
         }
 
         .editor-title {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--secondary);
             margin-bottom: 0.5rem;
+            line-height: 1.3;
         }
 
         .editor-subtitle {
             color: var(--gray-medium);
-            font-size: 1.1rem;
-            max-width: 600px;
+            font-size: 1rem;
             margin: 0 auto;
         }
 
-        /* Form Elements */
+        /* Form Elements - Mobile Friendly */
         .form-group {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
@@ -103,10 +157,11 @@
             border: 1px solid var(--border);
             color: var(--secondary);
             border-radius: 8px;
-            padding: 1rem 1.25rem;
+            padding: 1rem;
             font-size: 1rem;
             transition: all 0.3s ease;
             font-family: inherit;
+            width: 100%;
         }
 
         .form-control:focus {
@@ -121,7 +176,7 @@
             opacity: 0.7;
         }
 
-        /* Rich Text Editor */
+        /* Rich Text Editor - Mobile Optimized */
         .editor-wrapper {
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -132,17 +187,19 @@
         .editor-toolbar {
             background: var(--light);
             border-bottom: 1px solid var(--border);
-            padding: 1rem;
+            padding: 0.75rem;
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
             align-items: center;
+            overflow-x: auto;
         }
 
         .toolbar-group {
             display: flex;
             gap: 0.25rem;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .toolbar-btn {
@@ -150,8 +207,8 @@
             border: 1px solid var(--border);
             color: var(--secondary);
             border-radius: 6px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
+            padding: 0.5rem 0.6rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -173,16 +230,16 @@
 
         .toolbar-divider {
             width: 1px;
-            height: 24px;
+            height: 20px;
             background: var(--border);
-            margin: 0 0.5rem;
+            margin: 0 0.25rem;
         }
 
         .editor-content {
-            min-height: 400px;
-            padding: 2rem;
-            font-size: 1.1rem;
-            line-height: 1.7;
+            min-height: 300px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
             outline: none;
             background: var(--white);
         }
@@ -194,36 +251,36 @@
         }
 
         .editor-content h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin: 2rem 0 1rem;
+            margin: 1.5rem 0 1rem;
         }
 
         .editor-content h2 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin: 1.5rem 0 0.8rem;
+            margin: 1.2rem 0 0.8rem;
         }
 
         .editor-content h3 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin: 1.2rem 0 0.6rem;
+            margin: 1rem 0 0.6rem;
         }
 
         .editor-content p {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
         }
 
         .editor-content ul, .editor-content ol {
-            margin-bottom: 1.2rem;
-            padding-left: 1.8rem;
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
         }
 
         .editor-content blockquote {
             border-left: 4px solid var(--border);
-            padding-left: 1.5rem;
-            margin: 1.5rem 0;
+            padding-left: 1rem;
+            margin: 1rem 0;
             color: var(--gray-medium);
             font-style: italic;
         }
@@ -234,30 +291,19 @@
             font-weight: 500;
         }
 
-        /* Centered Featured Image Section */
+        /* Featured Image Section - Mobile Optimized */
         .featured-image-section {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-
-        .featured-image-container {
-            max-width: 600px;
-            width: 100%;
+            margin-bottom: 1.5rem;
         }
 
         .image-upload-card {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1rem;
             transition: all 0.3s ease;
             box-shadow: var(--shadow);
             text-align: center;
-        }
-
-        .image-upload-card:hover {
-            box-shadow: var(--shadow-md);
         }
 
         .image-upload-header {
@@ -265,25 +311,25 @@
             align-items: center;
             justify-content: center;
             gap: 0.8rem;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
         }
 
         .image-upload-icon {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: var(--gray-medium);
         }
 
         .image-upload-title {
             font-weight: 600;
             margin: 0;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--secondary);
         }
 
         .image-upload-container {
             border: 2px dashed var(--border);
             border-radius: 8px;
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1rem;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -297,9 +343,9 @@
         }
 
         .image-upload-main-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--gray-medium);
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         .image-upload-text {
@@ -309,13 +355,13 @@
         }
 
         .image-upload-hint {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gray-medium);
         }
 
         .image-preview {
             width: 100%;
-            max-height: 300px;
+            max-height: 200px;
             object-fit: cover;
             border-radius: 8px;
             margin-top: 1rem;
@@ -323,18 +369,18 @@
             box-shadow: var(--shadow);
         }
 
-        /* Action Buttons */
+        /* Action Buttons - Mobile Optimized */
         .editor-actions {
             display: flex;
             gap: 1rem;
-            margin-top: 3rem;
-            padding-top: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--border);
-            justify-content: center;
+            flex-direction: column;
         }
 
         .btn-action {
-            padding: 0.9rem 2rem;
+            padding: 1rem 1.5rem;
             border-radius: 8px;
             font-weight: 600;
             font-size: 1rem;
@@ -343,9 +389,9 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            min-width: 160px;
             justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
         }
 
         .btn-draft {
@@ -372,7 +418,7 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Preview Modal */
+        /* Preview Modal - Mobile Optimized */
         .preview-modal {
             position: fixed;
             top: 0;
@@ -387,6 +433,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            padding: 1rem;
         }
 
         .preview-modal.active {
@@ -397,8 +444,7 @@
         .preview-container {
             background: var(--white);
             border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
+            width: 100%;
             max-height: 90vh;
             overflow: hidden;
             box-shadow: var(--shadow-lg);
@@ -411,7 +457,7 @@
         }
 
         .preview-header {
-            padding: 1.5rem 2rem;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
@@ -421,7 +467,7 @@
 
         .preview-header h3 {
             margin: 0;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--secondary);
             display: flex;
@@ -432,7 +478,7 @@
         .close-preview {
             background: none;
             border: none;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: var(--gray-medium);
             cursor: pointer;
             transition: color 0.3s ease;
@@ -446,34 +492,34 @@
         }
 
         .preview-body {
-            padding: 2rem;
+            padding: 1.5rem;
             max-height: 70vh;
             overflow-y: auto;
         }
 
         .preview-content {
             max-width: 100%;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         .preview-content h1 {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: var(--secondary);
         }
 
         .preview-content h2 {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin: 2rem 0 1rem;
+            margin: 1.5rem 0 0.8rem;
         }
 
         .preview-content img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
             box-shadow: var(--shadow);
         }
 
@@ -535,44 +581,134 @@
             font-weight: 500;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .editor-container {
-                padding: 0 1rem;
-                margin: 1rem auto;
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .mobile-header {
+                display: none;
+            }
+
+            .desktop-nav {
+                display: block;
+            }
+
+            .fixed-back-button {
+                top: 25px;
+                left: 25px;
+            }
+
+            .main-container {
+                max-width: 900px;
+                padding: 2rem 1.5rem;
+                padding-top: 2.5rem; /* Added space for fixed back button */
+            }
+
+            .editor-header {
+                margin-bottom: 2.5rem;
             }
 
             .editor-title {
-                font-size: 1.8rem;
+                font-size: 2.2rem;
+            }
+
+            .editor-subtitle {
+                font-size: 1.1rem;
+                max-width: 600px;
+            }
+
+            .form-group {
+                margin-bottom: 2rem;
+            }
+
+            .form-control {
+                padding: 1rem 1.25rem;
             }
 
             .editor-toolbar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
+                padding: 1rem;
+                gap: 0.75rem;
             }
 
-            .toolbar-group {
-                margin-bottom: 0.5rem;
+            .toolbar-btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
             }
 
-            .editor-actions {
-                flex-direction: column;
-                align-items: center;
+            .editor-content {
+                min-height: 400px;
+                padding: 2rem;
+                font-size: 1.1rem;
+                line-height: 1.7;
             }
 
-            .btn-action {
-                width: 100%;
-                max-width: 300px;
+            .editor-content h1 {
+                font-size: 2rem;
+                margin: 2rem 0 1rem;
             }
 
-            .preview-container {
-                width: 95%;
-                margin: 1rem;
+            .editor-content h2 {
+                font-size: 1.6rem;
+                margin: 1.5rem 0 0.8rem;
+            }
+
+            .editor-content h3 {
+                font-size: 1.3rem;
+                margin: 1.2rem 0 0.6rem;
+            }
+
+            .featured-image-section {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 2rem;
             }
 
             .featured-image-container {
-                max-width: 100%;
+                max-width: 600px;
+                width: 100%;
+            }
+
+            .image-upload-card {
+                padding: 1.5rem;
+            }
+
+            .image-upload-container {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .image-upload-main-icon {
+                font-size: 2.5rem;
+            }
+
+            .image-preview {
+                max-height: 300px;
+            }
+
+            .editor-actions {
+                flex-direction: row;
+                justify-content: center;
+                margin-top: 3rem;
+                padding-top: 2rem;
+            }
+
+            .btn-action {
+                width: auto;
+                min-width: 160px;
+            }
+
+            .preview-container {
+                width: 90%;
+                max-width: 800px;
+            }
+
+            .preview-header {
+                padding: 1.5rem 2rem;
+            }
+
+            .preview-body {
+                padding: 2rem;
+            }
+
+            .preview-content h1 {
+                font-size: 2.2rem;
             }
         }
 
@@ -608,31 +744,41 @@
     </style>
 </head>
 <body>
-    <!-- Clean Professional Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-clean">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <h1 class="mobile-title">Create Post</h1>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
         <div class="container">
-            <a class="navbar-brand-clean" href="#">
+            <a class="navbar-brand" href="{{ url_for('home_page') }}">
                 <i class="fas fa-book-open"></i>
                 Readium
             </a>
         </div>
     </nav>
 
-    <!-- Editor Container -->
-    <div class="editor-container">
+    <!-- Fixed Back Button - Small and Clean -->
+    <a href="{{ url_for('home_page') }}" class="fixed-back-button" title="Back to Home">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- Main Container -->
+    <div class="main-container">
         <div class="editor-header">
             <h1 class="editor-title">Create New Post</h1>
             <p class="editor-subtitle">Share your thoughts, stories, and expertise with the world</p>
         </div>
 
-        <form id="postForm">
+        <form action="{{ url_for('make_post') }}" method="post" id="postForm" enctype="multipart/form-data">
             <!-- Title Field -->
             <div class="form-group">
                 <label for="postTitle" class="form-label">
                     <i class="fas fa-heading"></i>
                     Post Title
                 </label>
-                <input type="text" class="form-control" id="postTitle" placeholder="Enter a compelling title for your post" required>
+                <input type="text" class="form-control" id="postTitle" name="title" placeholder="Enter a compelling title for your post" required>
                 <div class="error-message" id="titleError">Please enter a title for your post</div>
             </div>
 
@@ -694,12 +840,13 @@
                         </div>
                     </div>
                     <div class="editor-content" id="editor" contenteditable="true" placeholder="Start writing your story here..."></div>
+                    <input type="hidden" name="content" id="hiddenContent">
                 </div>
                 <div class="word-count" id="wordCount">0 words</div>
                 <div class="error-message" id="contentError">Please add some content to your post</div>
             </div>
 
-            <!-- Centered Featured Image Section -->
+            <!-- Featured Image Section -->
             <div class="featured-image-section">
                 <div class="featured-image-container">
                     <div class="image-upload-card">
@@ -713,7 +860,7 @@
                             <div class="image-upload-hint">JPG, PNG or GIF - Max 5MB</div>
                             <img id="featuredPreview" class="image-preview" alt="Featured Preview">
                         </div>
-                        <input type="file" id="featuredInput" accept="image/*" style="display: none;">
+                        <input type="file" name="featured_image" id="featuredInput" accept="image/*" style="display: none;">
                     </div>
                 </div>
             </div>
@@ -756,12 +903,12 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const postForm = document.getElementById('postForm');
             const postTitle = document.getElementById('postTitle');
             const editor = document.getElementById('editor');
+            const hiddenContent = document.getElementById('hiddenContent');
             const saveDraftBtn = document.getElementById('saveDraftBtn');
             const publishBtn = document.getElementById('publishBtn');
             const titleError = document.getElementById('titleError');
@@ -935,9 +1082,17 @@
                 return isValid;
             }
 
+            // CRITICAL FIX: Copy editor content to hidden field
+            function prepareFormData() {
+                hiddenContent.value = editor.innerHTML;
+                console.log('Content prepared for submission');
+            }
+
             // Save as draft
             saveDraftBtn.addEventListener('click', function() {
                 if (!validateForm()) return;
+
+                prepareFormData();
 
                 // Show loading state
                 this.classList.add('loading');
@@ -967,55 +1122,24 @@
 
             // Publish post
             postForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+                // Always prepare form data first
+                prepareFormData();
 
-                if (!validateForm()) return;
+                if (!validateForm()) {
+                    e.preventDefault();
+                    return;
+                }
 
                 // Show loading state
                 publishBtn.classList.add('loading');
                 publishBtn.disabled = true;
                 saveDraftBtn.disabled = true;
 
-                // Simulate API call
-                setTimeout(() => {
-                    const postData = {
-                        title: postTitle.value,
-                        content: editor.innerHTML,
-                        featuredImage: featuredPreview.src || null,
-                        status: 'published',
-                        publishedAt: new Date().toISOString(),
-                        wordCount: wordCount.textContent
-                    };
-
-                    console.log('Publishing post:', postData);
-
-                    // Reset loading state
-                    publishBtn.classList.remove('loading');
-                    publishBtn.disabled = false;
-                    saveDraftBtn.disabled = false;
-
-                    // Show success message
-                    showToast('Post published successfully!');
-
-                    // In a real app, you would redirect to the published post
-                    // window.location.href = '/post/' + postId;
-                }, 2000);
+                console.log('Form submitted with content to Flask backend');
             });
-
-            // Auto-save draft every 30 seconds
-            let autoSaveTimer;
-            function startAutoSave() {
-                autoSaveTimer = setInterval(() => {
-                    if (postTitle.value.trim() || editor.textContent.trim() !== 'Start writing your story here...') {
-                        console.log('Auto-saving draft...');
-                        // In a real app, you would save to localStorage or send to backend
-                    }
-                }, 30000);
-            }
 
             // Initialize
             updateWordCount();
-            startAutoSave();
         });
     </script>
 </body>

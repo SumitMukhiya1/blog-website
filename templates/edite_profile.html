@@ -156,6 +156,14 @@
         border: 4px solid var(--white);
         box-shadow: var(--shadow-lg);
         background: var(--gray-100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar i {
+        font-size: 3rem;
+        color: var(--gray-400);
     }
 
     .avatar-edit {
@@ -314,6 +322,47 @@
         color: var(--gray-800);
     }
 
+    /* Location Specific Styles */
+    .location-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .location-field {
+        position: relative;
+    }
+
+    .location-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .location-suggestion {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid var(--gray-100);
+        transition: background-color 0.2s ease;
+    }
+
+    .location-suggestion:hover {
+        background: var(--gray-50);
+    }
+
+    .location-suggestion:last-child {
+        border-bottom: none;
+    }
+
     /* Buttons */
     .btn {
         padding: 0.75rem 1.5rem;
@@ -442,6 +491,10 @@
         .page-title {
             font-size: 1.75rem;
         }
+
+        .location-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -463,7 +516,7 @@
     {% endwith %}
 
     <form method="POST" action="{{ url_for('editing_profile_page') }}" enctype="multipart/form-data">
-        <!-- Profile Picture -->
+        <!-- Profile Picture - UPDATED WITH USER ICON LOGIC -->
         <div class="edit-card">
             <div class="card-header">
                 <h2 class="card-title">
@@ -473,21 +526,30 @@
             </div>
             <div class="avatar-section">
                 <div class="avatar-container">
-                    <img src="{{ url_for('static', filename='profile_pics/' + user_info.profile_image) if user_info.profile_image else 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' }}"
-                     alt="Profile"
-                     class="avatar"
-                     id="avatarPreview"
-                     onerror="this.src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'">
+                    {% if user_info.profile_image %}
+                        <img src="{{ url_for('static', filename='profile_pics/' + user_info.profile_image) }}"
+                             alt="Profile"
+                             class="avatar"
+                             id="avatarPreview"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="avatar" id="avatarIcon" style="display: none; align-items: center; justify-content: center; background: var(--gray-100);">
+                            <i class="fas fa-user" style="color: var(--gray-400); font-size: 3rem;"></i>
+                        </div>
+                    {% else %}
+                        <div class="avatar" id="avatarPreview" style="display: flex; align-items: center; justify-content: center; background: var(--gray-100);">
+                            <i class="fas fa-user" style="color: var(--gray-400); font-size: 3rem;"></i>
+                        </div>
+                    {% endif %}
                     <div class="avatar-edit" onclick="document.getElementById('avatarInput').click()">
                         <i class="fas fa-pen"></i>
                     </div>
-                    <input type="file"
-                           id="avatarInput"
-                           name="profile_picture"
-                           class="file-input"
-                           accept="image/*"
-                           onchange="updateAvatar(this)">
                 </div>
+                <input type="file"
+                       id="avatarInput"
+                       name="profile_picture"
+                       class="file-input"
+                       accept="image/*"
+                       onchange="updateAvatar(this)">
                 <div class="avatar-actions">
                     <button type="button" class="btn btn-outline" onclick="document.getElementById('avatarInput').click()">
                         <i class="fas fa-upload"></i>
@@ -559,6 +621,69 @@
             </div>
         </div>
 
+        <!-- Location Information -->
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Location Information
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Country</label>
+                        <input type="text"
+                               class="form-control"
+                               name="country"
+                               value="{{ user_info.country or '' }}"
+                               placeholder="Enter your country"
+                               maxlength="50"
+                               id="countryInput">
+                        <div class="help-text">Where are you based?</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text"
+                               class="form-control"
+                               name="city"
+                               value="{{ user_info.city or '' }}"
+                               placeholder="Enter your city"
+                               maxlength="50"
+                               id="cityInput">
+                        <div class="help-text">Your city or region</div>
+                    </div>
+
+                    <div class="form-group form-grid-full">
+                        <label class="form-label">Full Address</label>
+                        <input type="text"
+                               class="form-control"
+                               name="address"
+                               value="{{ user_info.address or '' }}"
+                               placeholder="Street address, apartment, suite, etc."
+                               maxlength="100">
+                        <div class="help-text">Your complete address (optional and private)</div>
+                    </div>
+
+                    <div class="form-group form-grid-full">
+                        <label class="form-label">Timezone</label>
+                        <select class="form-control" name="timezone">
+                            <option value="">Select your timezone</option>
+                            <option value="UTC-12" {{ 'selected' if user_info.timezone == 'UTC-12' }}>UTC-12: International Date Line West</option>
+                            <option value="UTC-8" {{ 'selected' if user_info.timezone == 'UTC-8' }}>UTC-8: Pacific Time (US & Canada)</option>
+                            <option value="UTC-5" {{ 'selected' if user_info.timezone == 'UTC-5' }}>UTC-5: Eastern Time (US & Canada)</option>
+                            <option value="UTC+0" {{ 'selected' if user_info.timezone == 'UTC+0' }}>UTC+0: Greenwich Mean Time</option>
+                            <option value="UTC+1" {{ 'selected' if user_info.timezone == 'UTC+1' }}>UTC+1: Central European Time</option>
+                            <option value="UTC+5:30" {{ 'selected' if user_info.timezone == 'UTC+5:30' }}>UTC+5:30: India Standard Time</option>
+                            <option value="UTC+8" {{ 'selected' if user_info.timezone == 'UTC+8' }}>UTC+8: China Standard Time</option>
+                        </select>
+                        <div class="help-text">Your local timezone for scheduling purposes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Contact Information -->
         <div class="edit-card">
             <div class="card-header">
@@ -590,12 +715,12 @@
                     </div>
 
                     <div class="form-group form-grid-full">
-                        <label class="form-label">Location</label>
+                        <label class="form-label">Education</label>
                         <input type="text"
                                class="form-control"
-                               name="location"
-                               value="{{ user_info.location or '' }}"
-                               placeholder="City, Country">
+                               name="education"
+                               value="{{ user_info.education or '' }}"
+                               placeholder="Your educational background">
                     </div>
                 </div>
             </div>
@@ -640,45 +765,48 @@
         </div>
 
         <!-- Social Links -->
-        <div class="edit-card">
-            <div class="card-header">
-                <h2 class="card-title">
-                    <i class="fas fa-link"></i>
-                    Social Links
-                </h2>
+<div class="edit-card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-link"></i>
+            Social Links
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <div class="links-list" id="linksContainer">
+                {% if user_info.links %}
+                    {% for link in user_info.links %}
+                        <div class="link-item" data-link-id="{{ link.id }}">
+                            <select class="form-control link-platform" name="website">
+                                <option value="website" {% if link.website == 'website' %}selected{% endif %}>Website</option>
+                                <option value="linkedin" {% if link.website == 'linkedin' %}selected{% endif %}>LinkedIn</option>
+                                <option value="github" {% if link.website == 'github' %}selected{% endif %}>GitHub</option>
+                                <option value="twitter" {% if link.website == 'twitter' %}selected{% endif %}>Twitter</option>
+                                <option value="instagram" {% if link.website == 'instagram' %}selected{% endif %}>Instagram</option>
+                                <option value="facebook" {% if link.website == 'facebook' %}selected{% endif %}>Facebook</option>
+                            </select>
+                            <input type="url"
+                                   class="form-control link-url"
+                                   name="link"
+                                   value="{{ link.link }}"
+                                   placeholder="https://example.com">
+                            <button type="button" class="link-delete" onclick="removeLink(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <div class="links-list" id="linksContainer">
-                        {% for link in user_info.links or [] %}
-                            <div class="link-item">
-                                <select class="form-control link-platform" name="link_platforms">
-                                    <option value="website" {{ 'selected' if link.platform == 'website' }}>Website</option>
-                                    <option value="linkedin" {{ 'selected' if link.platform == 'linkedin' }}>LinkedIn</option>
-                                    <option value="github" {{ 'selected' if link.platform == 'github' }}>GitHub</option>
-                                    <option value="twitter" {{ 'selected' if link.platform == 'twitter' }}>Twitter</option>
-                                    <option value="instagram" {{ 'selected' if link.platform == 'instagram' }}>Instagram</option>
-                                </select>
-                                <input type="url"
-                                       class="form-control link-url"
-                                       name="link_urls"
-                                       value="{{ link.url }}"
-                                       placeholder="https://example.com">
-                                <button type="button" class="link-delete" onclick="removeLink(this)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        {% endfor %}
-                    </div>
 
-                    <button type="button" class="add-link" onclick="addLink()">
-                        <i class="fas fa-plus"></i>
-                        Add Another Link
-                    </button>
-                    <div class="help-text">Add links to your website, social media profiles, or portfolio</div>
-                </div>
-            </div>
+            <button type="button" class="add-link" onclick="addLink()">
+                <i class="fas fa-plus"></i>
+                Add Another Link
+            </button>
+            <div class="help-text">Add links to your website, social media profiles, or portfolio</div>
         </div>
+    </div>
+</div>
 
         <!-- About Section -->
         <div class="edit-card">
@@ -748,10 +876,38 @@
     // Avatar functions
     function updateAvatar(input) {
         const preview = document.getElementById('avatarPreview');
+        const icon = document.getElementById('avatarIcon');
+
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                preview.src = e.target.result;
+                // If we're showing the icon, switch to image
+                if (preview.tagName === 'DIV') {
+                    // Create new image element
+                    const newImg = document.createElement('img');
+                    newImg.src = e.target.result;
+                    newImg.alt = "Profile";
+                    newImg.className = "avatar";
+                    newImg.id = "avatarPreview";
+                    newImg.onerror = "this.style.display='none'; this.nextElementSibling.style.display='flex';";
+
+                    // Replace the icon with image
+                    preview.parentNode.replaceChild(newImg, preview);
+
+                    // Add the icon as fallback
+                    const avatarContainer = document.querySelector('.avatar-container');
+                    if (!icon) {
+                        const fallbackIcon = document.createElement('div');
+                        fallbackIcon.className = "avatar";
+                        fallbackIcon.id = "avatarIcon";
+                        fallbackIcon.style.cssText = "display: none; align-items: center; justify-content: center; background: var(--gray-100);";
+                        fallbackIcon.innerHTML = '<i class="fas fa-user" style="color: var(--gray-400); font-size: 3rem;"></i>';
+                        newImg.parentNode.insertBefore(fallbackIcon, newImg.nextSibling);
+                    }
+                } else {
+                    // Update existing image
+                    preview.src = e.target.result;
+                }
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -759,8 +915,31 @@
 
     function resetAvatar() {
         const preview = document.getElementById('avatarPreview');
+        const icon = document.getElementById('avatarIcon');
         const input = document.getElementById('avatarInput');
-        preview.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+
+        // Show the user icon
+        if (preview && preview.tagName === 'IMG') {
+            preview.style.display = 'none';
+        }
+        if (icon) {
+            icon.style.display = 'flex';
+        } else {
+            // Create icon if it doesn't exist
+            const avatarContainer = document.querySelector('.avatar-container');
+            const newIcon = document.createElement('div');
+            newIcon.className = "avatar";
+            newIcon.id = "avatarIcon";
+            newIcon.style.cssText = "display: flex; align-items: center; justify-content: center; background: var(--gray-100);";
+            newIcon.innerHTML = '<i class="fas fa-user" style="color: var(--gray-400); font-size: 3rem;"></i>';
+
+            if (preview && preview.tagName === 'IMG') {
+                preview.parentNode.replaceChild(newIcon, preview);
+            } else {
+                avatarContainer.insertBefore(newIcon, avatarContainer.firstChild);
+            }
+        }
+
         input.value = '';
     }
 
@@ -794,30 +973,55 @@
         }
     }
 
+    // Update your removeSkill function
     function removeSkill(button) {
         const skillTag = button.parentElement;
-        skillTag.style.transition = 'all 0.3s ease';
-        skillTag.style.opacity = '0';
-        skillTag.style.transform = 'scale(0.8)';
-        setTimeout(() => {
-            skillTag.remove();
-        }, 300);
+        const skill = skillTag.querySelector('input[type="hidden"]').value;
+
+        // Send request to remove skill
+        fetch('/remove-skill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ skill: skill })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove from UI only if backend successful
+                skillTag.style.transition = 'all 0.3s ease';
+                skillTag.style.opacity = '0';
+                skillTag.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    skillTag.remove();
+                }, 300);
+            } else {
+                alert('Error removing skill: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error removing skill');
+        });
     }
 
-    // Links functions
+    // Links functions - ADDED THE MISSING addLink FUNCTION
     function addLink() {
         const container = document.getElementById('linksContainer');
         const linkItem = document.createElement('div');
         linkItem.className = 'link-item';
+        linkItem.setAttribute('data-link-id', 'new'); // Mark as new link
         linkItem.innerHTML = `
-            <select class="form-control link-platform" name="link_platforms">
+            <select class="form-control link-platform" name="website">
                 <option value="website">Website</option>
                 <option value="linkedin">LinkedIn</option>
                 <option value="github">GitHub</option>
                 <option value="twitter">Twitter</option>
                 <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
             </select>
-            <input type="url" class="form-control link-url" name="link_urls" placeholder="https://example.com">
+            <input type="url" class="form-control link-url" name="link" placeholder="https://example.com">
             <button type="button" class="link-delete" onclick="removeLink(this)">
                 <i class="fas fa-trash"></i>
             </button>
@@ -835,18 +1039,121 @@
     }
 
     function removeLink(button) {
-        const linkItem = button.parentElement;
-        linkItem.style.transition = 'all 0.3s ease';
-        linkItem.style.opacity = '0';
-        linkItem.style.transform = 'translateY(-10px)';
-        setTimeout(() => {
-            linkItem.remove();
-        }, 300);
+        const linkItem = button.closest('.link-item');
+        const linkId = linkItem.getAttribute('data-link-id');
+
+        // Check if it's an existing link (has a database ID)
+        if (linkId && linkId !== 'new') {
+            // Existing link - confirm and delete from database
+            if (confirm('Are you sure you want to remove this link?')) {
+                fetch(`/delete-link/${linkId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove from UI after successful deletion
+                        linkItem.style.transition = 'all 0.3s ease';
+                        linkItem.style.opacity = '0';
+                        linkItem.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            linkItem.remove();
+                        }, 300);
+                    } else {
+                        alert('Error removing link: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error removing link');
+                });
+            }
+        } else {
+            // New link (not saved to DB yet) - just remove from UI
+            linkItem.style.transition = 'all 0.3s ease';
+            linkItem.style.opacity = '0';
+            linkItem.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                linkItem.remove();
+            }, 300);
+        }
     }
+
+    // Location auto-suggestions
+    function setupLocationSuggestions() {
+        const countries = ['United States', 'India', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'France', 'Japan', 'Brazil', 'Mexico'];
+        const cities = {
+            'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'],
+            'India': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai'],
+            'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Glasgow'],
+            'Canada': ['Toronto', 'Vancouver', 'Montreal', 'Calgary', 'Ottawa'],
+            'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide']
+        };
+
+        const countryInput = document.getElementById('countryInput');
+        const cityInput = document.getElementById('cityInput');
+
+        if (countryInput) {
+            countryInput.addEventListener('input', function(e) {
+                showSuggestions(this, countries);
+            });
+        }
+
+        if (cityInput) {
+            cityInput.addEventListener('input', function(e) {
+                const country = countryInput.value;
+                if (country && cities[country]) {
+                    showSuggestions(this, cities[country]);
+                }
+            });
+        }
+    }
+
+    function showSuggestions(input, suggestions) {
+        // Remove existing suggestions
+        const existing = input.parentNode.querySelector('.location-suggestions');
+        if (existing) {
+            existing.remove();
+        }
+
+        const value = input.value.toLowerCase();
+        const filtered = suggestions.filter(s => s.toLowerCase().includes(value));
+
+        if (filtered.length > 0 && value.length > 0) {
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'location-suggestions';
+
+            filtered.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.className = 'location-suggestion';
+                div.textContent = suggestion;
+                div.addEventListener('click', function() {
+                    input.value = suggestion;
+                    suggestionsDiv.remove();
+                });
+                suggestionsDiv.appendChild(div);
+            });
+
+            input.parentNode.appendChild(suggestionsDiv);
+            suggestionsDiv.style.display = 'block';
+        }
+    }
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.matches('.form-control')) {
+            const suggestions = document.querySelectorAll('.location-suggestions');
+            suggestions.forEach(s => s.remove());
+        }
+    });
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         setupCounters();
+        setupLocationSuggestions();
 
         // Enter key for skills
         document.getElementById('skillInput').addEventListener('keypress', function(e) {
