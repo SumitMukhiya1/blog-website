@@ -1,11 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_login import login_user
+from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_user, current_user
 from routes.models_routes import User, db
+from datetime import date
 
 def authentication_route(app):
     @app.route('/signup', methods=['GET', 'POST'])
     def signup_page():
+        if current_user.is_authenticated:
+            return redirect(url_for('home_page'))
         if request.method == 'POST':
+            print("✅ SIGNUP POST REQUEST RECEIVED")  # Debug
+            print(f"Form data: {request.form}")
             fullname = request.form['fullname']
             email = request.form['email']
             password = request.form['password']
@@ -24,6 +29,8 @@ def authentication_route(app):
 
     @app.route('/login',methods=['GET', 'POST'])
     def login_page():
+        if current_user.is_authenticated:
+            return redirect(url_for('home_page'))
         if request.method == 'POST':
             email = request.form.get('email')
             password = request.form.get('password')
@@ -38,6 +45,8 @@ def authentication_route(app):
                 flash("Incorrect password")
         return render_template('login.html')
 
-    @app.route('/register')
+    @app.route('/register', methods=['GET', 'POST'])
     def register_page():
+        if current_user.is_authenticated:
+            return redirect(url_for('home_page'))
         return render_template('register.html')
